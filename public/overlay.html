@@ -29,6 +29,17 @@
             backdrop-filter: blur(5px);
             overflow: hidden;
             position: relative;
+            cursor: move;
+            user-select: none;
+        }
+
+        .factoid-container:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .factoid-container.dragging {
+            opacity: 0.8;
+            transform: scale(1.02);
         }
 
         .factoid-container::before {
@@ -205,6 +216,38 @@
         const factoidText = document.getElementById('factoidText');
         const gameTitle = document.getElementById('gameTitle');
 
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Drag functionality
+        factoidContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            factoidContainer.classList.add('dragging');
+            
+            const rect = factoidContainer.getBoundingClientRect();
+            dragOffset.x = e.clientX - rect.left;
+            dragOffset.y = e.clientY - rect.top;
+            
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const newX = e.screenX - dragOffset.x;
+                const newY = e.screenY - dragOffset.y;
+                
+                ipcRenderer.send('save-overlay-position', { x: newX, y: newY });
+                ipcRenderer.send('move-overlay-window', { x: newX, y: newY });
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                factoidContainer.classList.remove('dragging');
+            }
+        });
+
         // Listen for factoid display requests
         ipcRenderer.on('show-factoid', (event, data) => {
             if (data && data.text) {
@@ -238,6 +281,37 @@
             }, 500);
         });
 
+        // Listen for configuration updates
+        ipcRenderer.on('apply-config', (event, config) => {
+            applyConfiguration(config);
+        });
+
+        function applyConfiguration(config) {
+            const root = document.documentElement;
+            
+            // Update CSS custom properties
+            root.style.setProperty('--bg-color', config.backgroundColor);
+            root.style.setProperty('--border-color', config.borderColor);
+            root.style.setProperty('--text-color', config.textColor);
+            root.style.setProperty('--title-bg', config.titleBackgroundColor);
+            root.style.setProperty('--title-text-color', config.titleTextColor);
+            root.style.setProperty('--border-radius', config.borderRadius);
+            root.style.setProperty('--font-size', config.fontSize);
+
+            // Apply styles directly
+            factoidContainer.style.background = config.backgroundColor;
+            factoidContainer.style.borderColor = config.borderColor;
+            factoidContainer.style.color = config.textColor;
+            factoidContainer.style.borderRadius = config.borderRadius;
+            factoidContainer.style.fontSize = config.fontSize;
+            
+            const titleHeader = document.querySelector('.title-header');
+            if (titleHeader) {
+                titleHeader.style.background = config.titleBackgroundColor;
+                titleHeader.style.color = config.titleTextColor;
+            }
+        }
+
         // Auto-scale based on content length
         function adjustScale() {
             const textLength = factoidText.textContent.length;
@@ -253,6 +327,9 @@
         // Observer to adjust scale when content changes
         const observer = new MutationObserver(adjustScale);
         observer.observe(factoidText, { childList: true, characterData: true, subtree: true });
+
+        // Request initial configuration
+        ipcRenderer.send('get-overlay-config');
     </script>
 </body>
 </html>

@@ -11,6 +11,19 @@ let server;
 let gameFactoidIndexes = {};
 let currentTriggerCue = "Ready for factoid";
 
+// Configuration settings
+let overlayConfig = {
+  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  borderColor: '#00ff00',
+  textColor: '#ffffff',
+  titleBackgroundColor: 'linear-gradient(135deg, #00ff00, #00cc00)',
+  titleTextColor: '#000000',
+  borderRadius: '15px',
+  fontSize: '16px',
+  clickThrough: false,
+  position: { x: null, y: null } // Will be set on first load
+};
+
 // Game factoids with trigger cues
 const gameFactoidsData = {
   minecraft: {
@@ -142,8 +155,8 @@ function createExpressServer() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 300,
+    width: 450,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -179,7 +192,8 @@ function createOverlayWindow() {
   });
 
   overlayWindow.loadFile(path.join(__dirname, '../public/overlay.html'));
-  overlayWindow.setIgnoreMouseEvents(true);
+  // Don't ignore mouse events initially so it can be moved
+  overlayWindow.setIgnoreMouseEvents(false);
   overlayWindow.setAlwaysOnTop(true, 'screen-saver'); // Force highest level
 
   overlayWindow.on('closed', () => {
@@ -335,6 +349,42 @@ ipcMain.on('reset-factoid-order', () => {
     });
   }
   console.log('Factoid order reset for all games');
+});
+
+ipcMain.on('toggle-click-through', () => {
+  if (overlayWindow) {
+    overlayConfig.clickThrough = !overlayConfig.clickThrough;
+    overlayWindow.setIgnoreMouseEvents(overlayConfig.clickThrough);
+    console.log(`Click-through ${overlayConfig.clickThrough ? 'enabled' : 'disabled'}`);
+    
+    // Send status to main window
+    if (mainWindow) {
+      mainWindow.webContents.send('click-through-status', overlayConfig.clickThrough);
+    }
+  }
+});
+
+ipcMain.on('update-overlay-config', (event, config) => {
+  overlayConfig = { ...overlayConfig, ...config };
+  if (overlayWindow) {
+    overlayWindow.webContents.send('apply-config', overlayConfig);
+  }
+  console.log('Overlay configuration updated');
+});
+
+ipcMain.on('get-overlay-config', (event) => {
+  event.reply('overlay-config', overlayConfig);
+});
+
+ipcMain.on('save-overlay-position', (event, position) => {
+  overlayConfig.position = position;
+  console.log('Overlay position saved:', position);
+});
+
+ipcMain.on('move-overlay-window', (event, position) => {
+  if (overlayWindow) {
+    overlayWindow.setPosition(position.x, position.y);
+  }
 });
 
 // Function to show factoid for a specific game
