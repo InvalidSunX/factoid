@@ -7,6 +7,116 @@ let overlayWindow;
 let expressApp;
 let server;
 
+// Factoid tracking system
+let gameFactoidIndexes = {};
+let currentTriggerCue = "Ready for factoid";
+
+// Game factoids with trigger cues
+const gameFactoidsData = {
+  minecraft: {
+    facts: [
+      "Did you know? Minecraft was originally called 'Cave Game' during development!",
+      "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
+      "Did you know? Minecraft has sold over 300 million copies worldwide!",
+      "Did you know? The first version of Minecraft was created in just 6 days!",
+      "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
+    ],
+    triggers: [
+      "When entering a cave",
+      "When encountering a Creeper",
+      "During building/crafting",
+      "At game start/world creation",
+      "When in The End dimension"
+    ]
+  },
+  valorant: {
+    facts: [
+      "Did you know? Valorant was codenamed 'Project A' during development!",
+      "Did you know? Sage's healing ability was inspired by MMO healing mechanics!",
+      "Did you know? Riot Games used anti-cheat technology from the kernel level!",
+      "Did you know? Valorant's maps are designed to be perfectly balanced for both teams!",
+      "Did you know? The game was designed to run on lower-end PCs to be accessible!"
+    ],
+    triggers: [
+      "During agent select",
+      "When playing Sage",
+      "At match start",
+      "When switching sides",
+      "During performance issues"
+    ]
+  },
+  csgo: {
+    facts: [
+      "Did you know? CS:GO was initially received poorly but became one of the most popular FPS games!",
+      "Did you know? The AK-47 in CS:GO can one-shot kill with a headshot even with a helmet!",
+      "Did you know? Dust2 is the most played map in Counter-Strike history!",
+      "Did you know? The bomb timer in competitive matches is exactly 40 seconds!",
+      "Did you know? CS:GO's weapon skins market is worth millions of dollars!"
+    ],
+    triggers: [
+      "At game launch",
+      "When buying AK-47",
+      "When loading Dust2",
+      "During bomb plant/defuse",
+      "When opening cases/inventory"
+    ]
+  },
+  cs2: {
+    facts: [
+      "Did you know? Counter-Strike 2 uses the Source 2 engine for better graphics!",
+      "Did you know? CS2 features completely redesigned smoke grenades with volumetric effects!",
+      "Did you know? All CS:GO items and progress carry over to Counter-Strike 2!",
+      "Did you know? CS2 has improved netcode for more responsive gameplay!",
+      "Did you know? The new sub-tick system makes shots more precise than ever!"
+    ],
+    triggers: [
+      "At game start",
+      "When throwing smokes",
+      "When viewing inventory",
+      "During competitive match",
+      "When discussing updates"
+    ]
+  },
+  overwatch: {
+    facts: [
+      "Did you know? Overwatch was built from the cancelled project 'Titan'!",
+      "Did you know? Tracer was the first character designed for Overwatch!",
+      "Did you know? Each Overwatch hero has over 20,000 lines of code!",
+      "Did you know? The game's art style was inspired by Pixar animations!",
+      "Did you know? Overwatch won Game of the Year at The Game Awards 2016!"
+    ],
+    triggers: [
+      "At game launch",
+      "When selecting Tracer",
+      "During hero abilities",
+      "During cutscenes",
+      "During awards discussion"
+    ]
+  },
+  default: {
+    facts: [
+      "Did you know? The first video game was created in 1958!",
+      "Did you know? Pac-Man was originally called Puck-Man in Japan!",
+      "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
+      "Did you know? Tetris was created by a Russian programmer in 1984!",
+      "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
+      "Did you know? The PlayStation was originally designed as a Nintendo console!",
+      "Did you know? The longest gaming session ever recorded was 138 hours!",
+      "Did you know? Super Mario's jump sound was created by accident!"
+    ],
+    triggers: [
+      "During general gaming",
+      "When discussing retro games",
+      "During arcade discussion",
+      "When talking about puzzle games",
+      "During console discussion",
+      "When discussing gaming history",
+      "During marathon streams",
+      "When discussing sound design"
+    ]
+  }
+};
+
 // Express server for serving the overlay UI
 function createExpressServer() {
   expressApp = express();
@@ -99,63 +209,39 @@ function showRandomFactoid() {
   // Detect current game (this is a simplified version - you can enhance this with actual process detection)
   const currentGame = detectCurrentGame();
   
-  const gameFactoids = {
-    minecraft: [
-      "Did you know? Minecraft was originally called 'Cave Game' during development!",
-      "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
-      "Did you know? Minecraft has sold over 300 million copies worldwide!",
-      "Did you know? The first version of Minecraft was created in just 6 days!",
-      "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
-    ],
-    valorant: [
-      "Did you know? Valorant was codenamed 'Project A' during development!",
-      "Did you know? Sage's healing ability was inspired by MMO healing mechanics!",
-      "Did you know? Riot Games used anti-cheat technology from the kernel level!",
-      "Did you know? Valorant's maps are designed to be perfectly balanced for both teams!",
-      "Did you know? The game was designed to run on lower-end PCs to be accessible!"
-    ],
-    csgo: [
-      "Did you know? CS:GO was initially received poorly but became one of the most popular FPS games!",
-      "Did you know? The AK-47 in CS:GO can one-shot kill with a headshot even with a helmet!",
-      "Did you know? Dust2 is the most played map in Counter-Strike history!",
-      "Did you know? The bomb timer in competitive matches is exactly 40 seconds!",
-      "Did you know? CS:GO's weapon skins market is worth millions of dollars!"
-    ],
-    cs2: [
-      "Did you know? Counter-Strike 2 uses the Source 2 engine for better graphics!",
-      "Did you know? CS2 features completely redesigned smoke grenades with volumetric effects!",
-      "Did you know? All CS:GO items and progress carry over to Counter-Strike 2!",
-      "Did you know? CS2 has improved netcode for more responsive gameplay!",
-      "Did you know? The new sub-tick system makes shots more precise than ever!"
-    ],
-    overwatch: [
-      "Did you know? Overwatch was built from the cancelled project 'Titan'!",
-      "Did you know? Tracer was the first character designed for Overwatch!",
-      "Did you know? Each Overwatch hero has over 20,000 lines of code!",
-      "Did you know? The game's art style was inspired by Pixar animations!",
-      "Did you know? Overwatch won Game of the Year at The Game Awards 2016!"
-    ],
-    default: [
-      "Did you know? The first video game was created in 1958!",
-      "Did you know? Pac-Man was originally called Puck-Man in Japan!",
-      "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
-      "Did you know? Tetris was created by a Russian programmer in 1984!",
-      "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
-      "Did you know? The PlayStation was originally designed as a Nintendo console!",
-      "Did you know? The longest gaming session ever recorded was 138 hours!",
-      "Did you know? Super Mario's jump sound was created by accident!"
-    ]
-  };
+  // Get or initialize the factoid index for this game
+  if (!gameFactoidIndexes[currentGame.id]) {
+    gameFactoidIndexes[currentGame.id] = 0;
+  }
   
-  const factoids = gameFactoids[currentGame.id] || gameFactoids.default;
-  const randomFactoid = factoids[Math.floor(Math.random() * factoids.length)];
+  const gameData = gameFactoidsData[currentGame.id] || gameFactoidsData.default;
+  const currentIndex = gameFactoidIndexes[currentGame.id];
+  
+  // Get the current factoid and trigger cue
+  const factoid = gameData.facts[currentIndex];
+  const triggerCue = gameData.triggers[currentIndex];
+  
+  // Update the trigger cue for the main window
+  currentTriggerCue = triggerCue;
+  if (mainWindow) {
+    mainWindow.webContents.send('update-trigger-cue', {
+      cue: triggerCue,
+      gameTitle: currentGame.displayName,
+      factoidNumber: currentIndex + 1,
+      totalFactoids: gameData.facts.length
+    });
+  }
+  
+  // Advance to next factoid (loop back to start if at end)
+  gameFactoidIndexes[currentGame.id] = (currentIndex + 1) % gameData.facts.length;
   
   if (overlayWindow) {
     overlayWindow.webContents.send('show-factoid', { 
-      text: randomFactoid,
+      text: factoid,
       game: currentGame
     });
     overlayWindow.show();
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver'); // Ensure it stays on top
     
     // Auto-hide after 6 seconds (slightly longer for more content)
     setTimeout(() => {
@@ -237,6 +323,20 @@ ipcMain.on('hide-overlay', () => {
   }
 });
 
+ipcMain.on('reset-factoid-order', () => {
+  gameFactoidIndexes = {};
+  currentTriggerCue = "Ready for factoid";
+  if (mainWindow) {
+    mainWindow.webContents.send('update-trigger-cue', {
+      cue: "Ready for factoid",
+      gameTitle: "All Games Reset",
+      factoidNumber: 1,
+      totalFactoids: "?"
+    });
+  }
+  console.log('Factoid order reset for all games');
+});
+
 // Function to show factoid for a specific game
 function showGameSpecificFactoid(gameId) {
   const games = {
@@ -255,63 +355,39 @@ function showGameSpecificFactoid(gameId) {
 
   const game = games[gameId] || games.default;
   
-  const gameFactoids = {
-    minecraft: [
-      "Did you know? Minecraft was originally called 'Cave Game' during development!",
-      "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
-      "Did you know? Minecraft has sold over 300 million copies worldwide!",
-      "Did you know? The first version of Minecraft was created in just 6 days!",
-      "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
-    ],
-    valorant: [
-      "Did you know? Valorant was codenamed 'Project A' during development!",
-      "Did you know? Sage's healing ability was inspired by MMO healing mechanics!",
-      "Did you know? Riot Games used anti-cheat technology from the kernel level!",
-      "Did you know? Valorant's maps are designed to be perfectly balanced for both teams!",
-      "Did you know? The game was designed to run on lower-end PCs to be accessible!"
-    ],
-    csgo: [
-      "Did you know? CS:GO was initially received poorly but became one of the most popular FPS games!",
-      "Did you know? The AK-47 in CS:GO can one-shot kill with a headshot even with a helmet!",
-      "Did you know? Dust2 is the most played map in Counter-Strike history!",
-      "Did you know? The bomb timer in competitive matches is exactly 40 seconds!",
-      "Did you know? CS:GO's weapon skins market is worth millions of dollars!"
-    ],
-    cs2: [
-      "Did you know? Counter-Strike 2 uses the Source 2 engine for better graphics!",
-      "Did you know? CS2 features completely redesigned smoke grenades with volumetric effects!",
-      "Did you know? All CS:GO items and progress carry over to Counter-Strike 2!",
-      "Did you know? CS2 has improved netcode for more responsive gameplay!",
-      "Did you know? The new sub-tick system makes shots more precise than ever!"
-    ],
-    overwatch: [
-      "Did you know? Overwatch was built from the cancelled project 'Titan'!",
-      "Did you know? Tracer was the first character designed for Overwatch!",
-      "Did you know? Each Overwatch hero has over 20,000 lines of code!",
-      "Did you know? The game's art style was inspired by Pixar animations!",
-      "Did you know? Overwatch won Game of the Year at The Game Awards 2016!"
-    ],
-    default: [
-      "Did you know? The first video game was created in 1958!",
-      "Did you know? Pac-Man was originally called Puck-Man in Japan!",
-      "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
-      "Did you know? Tetris was created by a Russian programmer in 1984!",
-      "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
-      "Did you know? The PlayStation was originally designed as a Nintendo console!",
-      "Did you know? The longest gaming session ever recorded was 138 hours!",
-      "Did you know? Super Mario's jump sound was created by accident!"
-    ]
-  };
+  // Get or initialize the factoid index for this game
+  if (!gameFactoidIndexes[gameId]) {
+    gameFactoidIndexes[gameId] = 0;
+  }
   
-  const factoids = gameFactoids[gameId] || gameFactoids.default;
-  const randomFactoid = factoids[Math.floor(Math.random() * factoids.length)];
+  const gameData = gameFactoidsData[gameId] || gameFactoidsData.default;
+  const currentIndex = gameFactoidIndexes[gameId];
+  
+  // Get the current factoid and trigger cue
+  const factoid = gameData.facts[currentIndex];
+  const triggerCue = gameData.triggers[currentIndex];
+  
+  // Update the trigger cue for the main window
+  currentTriggerCue = triggerCue;
+  if (mainWindow) {
+    mainWindow.webContents.send('update-trigger-cue', {
+      cue: triggerCue,
+      gameTitle: game.displayName,
+      factoidNumber: currentIndex + 1,
+      totalFactoids: gameData.facts.length
+    });
+  }
+  
+  // Advance to next factoid (loop back to start if at end)
+  gameFactoidIndexes[gameId] = (currentIndex + 1) % gameData.facts.length;
   
   if (overlayWindow) {
     overlayWindow.webContents.send('show-factoid', { 
-      text: randomFactoid,
+      text: factoid,
       game: game
     });
     overlayWindow.show();
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver'); // Ensure it stays on top
     
     // Auto-hide after 6 seconds
     setTimeout(() => {

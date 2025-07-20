@@ -119,6 +119,45 @@
             background: #2a2a2a;
             color: white;
         }
+
+        .trigger-cue-section {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .trigger-cue-section h3 {
+            margin: 0 0 10px 0;
+            color: #00ff00;
+            font-size: 16px;
+        }
+
+        .trigger-cue {
+            background: rgba(0, 0, 0, 0.3);
+            color: #00ff00;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border: 1px solid rgba(0, 255, 0, 0.5);
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        .factoid-progress {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        @keyframes flash {
+            0% { background: rgba(0, 0, 0, 0.3); }
+            50% { background: rgba(0, 255, 0, 0.3); }
+            100% { background: rgba(0, 0, 0, 0.3); }
+        }
     </style>
 </head>
 <body>
@@ -129,6 +168,12 @@
             <div class="button-group">
                 <button onclick="showFactoid()">Show Random Factoid</button>
                 <button onclick="hideOverlay()">Hide Overlay</button>
+                
+                <div class="trigger-cue-section">
+                    <h3>📺 Next Trigger Cue</h3>
+                    <div id="triggerCue" class="trigger-cue">Ready for factoid</div>
+                    <div id="factoidProgress" class="factoid-progress">Game: Auto-Detect | Factoid: 1/8</div>
+                </div>
                 
                 <div class="game-selector">
                     <label for="gameSelect">Select Game:</label>
@@ -148,6 +193,7 @@
                 </div>
                 
                 <button onclick="showGameSpecificFactoid()">Show Game-Specific Factoid</button>
+                <button onclick="resetFactoidOrder()">Reset Factoid Order</button>
             </div>
 
             <div class="hotkey-info">
@@ -187,6 +233,25 @@
         function showGameSpecificFactoid() {
             ipcRenderer.send('show-game-factoid', selectedGame);
         }
+
+        function resetFactoidOrder() {
+            ipcRenderer.send('reset-factoid-order');
+        }
+
+        // Listen for trigger cue updates
+        ipcRenderer.on('update-trigger-cue', (event, data) => {
+            const triggerCueElement = document.getElementById('triggerCue');
+            const progressElement = document.getElementById('factoidProgress');
+            
+            triggerCueElement.textContent = data.cue;
+            progressElement.textContent = `Game: ${data.gameTitle} | Factoid: ${data.factoidNumber}/${data.totalFactoids}`;
+            
+            // Add a flash effect to draw attention
+            triggerCueElement.style.animation = 'none';
+            setTimeout(() => {
+                triggerCueElement.style.animation = 'flash 0.5s ease-in-out';
+            }, 10);
+        });
 
         // Add some visual feedback
         document.addEventListener('DOMContentLoaded', () => {
