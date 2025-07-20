@@ -1,26 +1,37 @@
 # Factoid Overlay 🎮
 
-A desktop overlay application for streamers to display "Did You Know?" factoids during gameplay. Built with Node.js and Electron, featuring global hotkey support for seamless integration with any streaming setup.
+A powerful desktop overlay application that displays "Did You Know?" factoids during gameplay or streaming. Built with Node.js and Electron, featuring a complete management system with persistent storage, global hotkeys, and real-time customization.
 
-## Features
+## ✨ Key Features
 
+### 🎯 Core Functionality
 - **Desktop Overlay**: Transparent, always-on-top overlay that appears over any application
-- **Global Hotkeys**: 
-  - `Ctrl + Shift + F` - Show random factoid
-  - `Ctrl + Shift + H` - Hide overlay  
-  - `Ctrl + Shift + G` - Show game-specific factoid
-- **Full Configuration Panel**: Customize colors, fonts, shadows, hotkeys, and server settings
-- **Configurable Hotkeys**: Customize hotkey combinations via .env file or control panel
-- **Real-time Customization**: Change appearance and behavior without restarting
-- **Scalable UI**: Automatically adjusts size based on content and screen resolution
-- **Movable Overlay**: Click and drag to position anywhere on screen
-- **Shadow Effects**: Configurable shadow color and opacity for enhanced visibility
-- **Ordered Factoids**: Sequential display with trigger timing cues
-- **Game-Specific Facts**: Tailored factoids for different games
-- **Streaming Ready**: Designed for use with OBS, Streamlabs, and other streaming software
-- **Port Configuration**: Customizable server port via environment variables or control panel
+- **Global Hotkeys**: System-wide keyboard shortcuts (fully customizable)
+- **Game & Factoid Management**: Complete CRUD interface for games and factoids
+- **Persistent Storage**: JSON-based data storage that survives restarts
+- **Real-time Updates**: Changes appear immediately without restarting
 
-## Quick Start
+### 🎮 Game Management System
+- **Dynamic Game Library**: Add unlimited games with custom factoids
+- **Organized Content**: Each game has its own factoid collection
+- **Game-Specific Display**: Target factoids to specific games
+- **Bulk Management**: Easy overview and editing of all content
+- **Data Persistence**: Automatic saving to `data/games.json`
+
+### ⚙️ Full Customization
+- **Visual Styling**: Colors, fonts, shadows, borders, transparency
+- **Positioning**: Configurable default overlay position via .env
+- **Hotkey Mapping**: Custom keyboard shortcuts for all functions
+- **Server Configuration**: Adjustable port and API settings
+- **Click-through Mode**: Make overlay non-interactive when needed
+
+### 🎥 Streaming Ready
+- **OBS Compatible**: Works with OBS Studio, Streamlabs, XSplit
+- **Transparent Background**: Only factoid content is visible
+- **Scalable UI**: Adapts to different screen resolutions
+- **Professional Appearance**: Clean, modern design
+
+## 🚀 Quick Start
 
 1. **Install Dependencies**
    ```bash
@@ -30,7 +41,7 @@ A desktop overlay application for streamers to display "Did You Know?" factoids 
 2. **Configure Environment (Optional)**
    ```bash
    cp .env.example .env
-   # Edit .env to customize ports and hotkeys
+   # Edit .env to customize settings
    ```
 
 3. **Run the Application**
@@ -38,142 +49,263 @@ A desktop overlay application for streamers to display "Did You Know?" factoids 
    npm start
    ```
 
-4. **Use Global Hotkeys**
+4. **Global Hotkeys (Default)**
    - `Ctrl + Shift + F` - Show random factoid
    - `Ctrl + Shift + H` - Hide overlay
    - `Ctrl + Shift + G` - Show game-specific factoid
 
-## How It Works
+5. **Add Your Content**
+   - Click "🎮 Manage Games & Factoids" in control panel
+   - Add your games and factoids
+   - Start using!
 
-The application consists of:
-- **Main Control Panel**: A control window to manage the overlay
-- **Transparent Overlay**: The actual factoid display that appears over your desktop
-- **Express Server**: Local API server for external integrations
-- **Global Hotkey System**: System-wide keyboard shortcuts
+## 🏗️ How It Works
 
-## Project Structure
+The application consists of four main components:
+
+1. **Main Control Panel (400x550)**: Compact interface for managing the overlay, games, and settings
+2. **Game Manager Window**: Full-featured interface for adding/editing games and factoids  
+3. **Transparent Overlay**: The actual factoid display that appears over your desktop
+4. **Express Server**: Local API server for external integrations and web-based controls
+
+## 📁 Project Structure
 
 ```
 factoid/
 ├── src/
-│   └── main.js           # Main Electron application
+│   └── main.js              # Main Electron application
 ├── public/
-│   ├── overlay.html      # Overlay UI
-│   └── control.html      # Control panel UI
-├── package.json          # Dependencies and scripts
-└── README.md            # This file
+│   ├── overlay.html         # Overlay UI
+│   ├── control.html         # Control panel UI  
+│   └── game-manager.html    # Game management interface
+├── data/
+│   └── games.json           # Persistent game and factoid storage
+├── .env                     # Environment configuration
+├── package.json             # Dependencies and scripts
+└── README.md               # This file
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 ### Environment Variables (.env file)
 
-Create a `.env` file in the root directory to customize settings:
+Create a `.env` file in the root directory to customize default settings:
 
 ```bash
-# Server port (default: 3000)
+# Server Configuration
 PORT=3000
 
-# Global hotkeys - customize these combinations
+# Global Hotkeys (customize these combinations)
 SHOW_FACTOID_HOTKEY=CommandOrControl+Shift+F
 HIDE_OVERLAY_HOTKEY=CommandOrControl+Shift+H
 SHOW_GAME_SPECIFIC_HOTKEY=CommandOrControl+Shift+G
 
-# Default game for game-specific hotkey
+# Default Game
 DEFAULT_GAME=default
 
-# Overlay dimensions
+# Overlay Dimensions
 DEFAULT_OVERLAY_WIDTH=420
 DEFAULT_OVERLAY_HEIGHT=180
+
+# Default Overlay Position (leave empty for auto-positioning to top-right corner)
+# Set specific pixel coordinates for a fixed position
+# Example: DEFAULT_OVERLAY_X=100 DEFAULT_OVERLAY_Y=50
+DEFAULT_OVERLAY_X=
+DEFAULT_OVERLAY_Y=
 ```
 
-### Hotkey Modifiers
-Available modifiers for hotkeys:
+### Hotkey Format
+Use these modifiers in your hotkey combinations:
 - `CommandOrControl` - Ctrl on Windows/Linux, Cmd on Mac
 - `Alt` - Alt key
-- `Shift` - Shift key
-- `Super` - Windows key
+- `Shift` - Shift key  
+- `Super` - Windows key (Linux only)
 
-### Game-Specific Hotkey
-The `Ctrl + Shift + G` hotkey (or your custom combination) shows factoids for a specific game:
-1. Select the game in the "Game for Ctrl+Shift+G" dropdown
-2. Use the hotkey to show factoids only for that game
-3. Perfect for when you're playing a specific game and want targeted facts
+Examples: `CommandOrControl+Shift+F`, `Alt+F1`, `Ctrl+Alt+G`
+## 🎮 Game & Factoid Management
 
-## Customization
+### Complete Management System
+The application includes a powerful management interface accessible via "🎮 Manage Games & Factoids":
 
-### Built-in Configuration Panel
-The control panel includes a comprehensive configuration system:
+**Game Management:**
+- **Add Games**: Create new games with unique IDs and display names
+- **Edit Games**: Update game information and display names
+- **Delete Games**: Remove games and all associated factoids
+- **Game Overview**: See all games with factoid counts
 
-1. **Colors**: Background, border, text, title, and shadow colors
-2. **Style**: Border radius, font size, shadow opacity
-3. **Server Settings**: Change the server port
-4. **Hotkey Settings**: Customize all global hotkeys
-5. **Game Selection**: Choose specific games for targeted factoids
+**Factoid Management:**  
+- **Add Factoids**: Create new facts with trigger cues for any game
+- **Edit Factoids**: Modify existing factoid text and triggers
+- **Delete Factoids**: Remove individual factoids from games
+- **Bulk View**: See all factoids for each game in an organized list
 
-Access the configuration panel by clicking "⚙️ Configure Overlay" in the control panel.
+### Adding Content (Step-by-Step)
+
+1. **Add a New Game**:
+   ```
+   Game ID: halo_infinite (lowercase, no spaces)
+   Display Name: Halo Infinite
+   ```
+
+2. **Add Factoids to Your Game**:
+   ```
+   Factoid: "Did you know? Master Chief's armor weighs 880 pounds!"
+   Trigger: "During combat sequences"
+   ```
+
+3. **Use Your Content**:
+   - Select your game in the main control panel dropdown
+   - Use hotkeys or buttons to display your custom factoids
+
+### Data Storage
+- **File Location**: `data/games.json`
+- **Auto-Save**: Changes save immediately  
+- **Persistence**: Survives application restarts
+- **Backup Recommended**: Keep copies of your `games.json` file
+
+### Game Selection
+The main control panel features a single dropdown that controls:
+- Which game the "🎮 Game Factoid" button displays
+- Which game the `Ctrl+Shift+G` hotkey targets
+- The current factoid sequence and trigger cues
+
+## 🎨 Customization & Configuration
+
+### Built-in Control Panel
+Access comprehensive settings via "⚙️ Configure" in the main control panel:
+
+**Visual Customization:**
+- **Colors**: Background, border, text, title, and shadow colors
+- **Typography**: Font size and text styling  
+- **Effects**: Border radius, shadow opacity, transparency
+- **Layout**: Overlay dimensions and positioning
+
+**Functional Settings:**
+- **Server Port**: Change the local API server port
+- **Global Hotkeys**: Customize all keyboard shortcuts
+- **Click-through Mode**: Make overlay non-interactive
+- **Game Selection**: Choose default games for hotkeys
 
 ### Advanced Configuration (.env)
-Create a `.env` file in the root directory (copy from `.env.example`):
+Environment variables override default settings:
 
 ```bash
-# Port configuration
+# Server Configuration  
 PORT=3000
 
-# Global hotkey configuration
+# Global Hotkey Configuration
 SHOW_FACTOID_HOTKEY=CommandOrControl+Shift+F
 HIDE_OVERLAY_HOTKEY=CommandOrControl+Shift+H
 SHOW_GAME_SPECIFIC_HOTKEY=CommandOrControl+Shift+G
 
-# Default game for game-specific hotkey
+# Default Settings
 DEFAULT_GAME=default
 
-# Overlay dimensions
+# Overlay Appearance
 DEFAULT_OVERLAY_WIDTH=420
 DEFAULT_OVERLAY_HEIGHT=180
 
-# Default appearance
-DEFAULT_SHADOW_COLOR=#00ff00
-DEFAULT_SHADOW_OPACITY=0.6
+# Overlay Positioning
+DEFAULT_OVERLAY_X=        # Leave empty for auto-positioning
+DEFAULT_OVERLAY_Y=        # Set numbers for fixed position (e.g., 100, 50)
 ```
 
-### Adding New Factoids
-Edit the `factoids` array in `src/main.js`:
+### Position Examples
+```bash
+# Auto-position to top-right (default)
+DEFAULT_OVERLAY_X=
+DEFAULT_OVERLAY_Y=
+
+# Fixed top-left corner
+DEFAULT_OVERLAY_X=20
+DEFAULT_OVERLAY_Y=20
+
+# Custom position
+DEFAULT_OVERLAY_X=500
+DEFAULT_OVERLAY_Y=100
+```
+
+## 🎥 For Streamers & Content Creators
+
+### Streaming Software Integration
+This overlay works seamlessly with all major streaming platforms:
+
+**OBS Studio:**
+1. Add "Browser Source" 
+2. Set URL to local overlay endpoint
+3. Configure transparency and positioning
+4. The overlay will appear only when factoids are triggered
+
+**Streamlabs OBS:**
+1. Add "Browser Source" widget
+2. Use local overlay URL  
+3. Configure as transparent overlay
+4. Integrate with alerts and scenes
+
+**XSplit:**
+1. Add "Webpage" source
+2. Point to overlay endpoint
+3. Set as transparent layer
+4. Position over game capture
+
+### Content Creation Features
+- **Professional Appearance**: Clean, modern design that complements any stream
+- **Transparent Background**: Only factoid content is visible to viewers
+- **Customizable Timing**: Control when and how long factoids appear  
+- **Game-Specific Content**: Targeted facts that enhance specific gameplay
+- **Sequential Display**: Factoids appear in order with timing cues
+- **Non-Intrusive**: Overlay doesn't interfere with gameplay
+
+### Integration Options
+- **Manual Control**: Use hotkeys during stream for perfect timing
+- **API Integration**: Build custom triggers with the local Express server
+- **Scene Integration**: Combine with OBS scenes for automated display
+- **External Control**: Use web interface for remote factoid management
+
+## 🔧 Development & API
+
+### Local Development
+```bash
+# Development mode with auto-restart
+npm run dev
+
+# Standard mode  
+npm start
+
+# Debug mode
+npm run debug
+```
+
+### API Endpoints
+The application runs a local Express server with these endpoints:
 
 ```javascript
-const factoids = [
-    "Did you know? Your custom fact here!",
-    // Add more facts...
-];
+// Trigger factoid display
+POST http://localhost:3000/api/show-factoid
+{
+  "text": "Your custom factoid",
+  "game": { "displayName": "Game Name" }
+}
+
+// Static file serving
+GET http://localhost:3000/
 ```
 
-### Changing Hotkeys
-Modify the hotkey registration in `src/main.js`:
-
-```javascript
-globalShortcut.register('YourHotkey', () => {
-    // Your action here
-});
+### File Structure Details
+```
+├── src/main.js          # Electron main process, IPC handlers, data management
+├── public/
+│   ├── control.html     # Main control panel (400x550)
+│   ├── game-manager.html # Game/factoid management interface  
+│   └── overlay.html     # Transparent overlay display
+├── data/games.json      # Persistent game and factoid storage
+└── .env                 # Environment configuration
 ```
 
-### Styling the Overlay
-Edit the CSS in `public/overlay.html` to customize appearance, colors, animations, and positioning.
+## 📝 License
 
-## For Streamers
+MIT License - Feel free to modify and use for your streaming and content creation needs!
 
-This overlay is designed to work with streaming software:
+## 🤝 Contributing
 
-1. **OBS Studio**: Add a "Browser Source" pointing to the overlay window
-2. **Streamlabs**: Use "Browser Source" with the local overlay URL
-3. **XSplit**: Add "Webpage" source for the overlay
-
-The overlay is transparent and will only show the factoid box when triggered.
-
-## Development
-
-- `npm start` - Run the application
-- `npm run dev` - Run with auto-restart (requires nodemon)
-
-## License
-
-MIT License - feel free to modify and use for your streaming needs!
+Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests to improve the application.

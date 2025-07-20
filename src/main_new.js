@@ -21,9 +21,7 @@ const config = {
   showGameSpecificHotkey: process.env.SHOW_GAME_SPECIFIC_HOTKEY || 'CommandOrControl+Shift+G',
   defaultGame: process.env.DEFAULT_GAME || 'default',
   overlayWidth: parseInt(process.env.DEFAULT_OVERLAY_WIDTH) || 420,
-  overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180,
-  overlayX: process.env.DEFAULT_OVERLAY_X ? parseInt(process.env.DEFAULT_OVERLAY_X) : null,
-  overlayY: process.env.DEFAULT_OVERLAY_Y ? parseInt(process.env.DEFAULT_OVERLAY_Y) : null
+  overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180
 };
 
 // Factoid tracking system
@@ -159,9 +157,8 @@ function createExpressServer() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 575,
-    resizable: true,
+    width: 450,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -172,11 +169,6 @@ function createMainWindow() {
 
   mainWindow.loadFile(path.join(__dirname, '../public/control.html'));
 
-  mainWindow.webContents.once('did-finish-load', () => {
-    // Send initial games list when window loads
-    updateMainWindowGameList();
-  });
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -185,15 +177,11 @@ function createMainWindow() {
 function createOverlayWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   
-  // Use .env position values if set, otherwise default to top-right corner
-  const overlayX = config.overlayX !== null ? config.overlayX : width - (config.overlayWidth + 20);
-  const overlayY = config.overlayY !== null ? config.overlayY : 20;
-  
   overlayWindow = new BrowserWindow({
     width: config.overlayWidth,
     height: config.overlayHeight,
-    x: overlayX,
-    y: overlayY,
+    x: width - (config.overlayWidth + 20),
+    y: 20,
     frame: false,
     transparent: true,
     alwaysOnTop: true,

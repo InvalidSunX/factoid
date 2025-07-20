@@ -21,9 +21,7 @@ const config = {
   showGameSpecificHotkey: process.env.SHOW_GAME_SPECIFIC_HOTKEY || 'CommandOrControl+Shift+G',
   defaultGame: process.env.DEFAULT_GAME || 'default',
   overlayWidth: parseInt(process.env.DEFAULT_OVERLAY_WIDTH) || 420,
-  overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180,
-  overlayX: process.env.DEFAULT_OVERLAY_X ? parseInt(process.env.DEFAULT_OVERLAY_X) : null,
-  overlayY: process.env.DEFAULT_OVERLAY_Y ? parseInt(process.env.DEFAULT_OVERLAY_Y) : null
+  overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180
 };
 
 // Factoid tracking system
@@ -48,91 +46,148 @@ let overlayConfig = {
 
 // Game factoids data - loaded from JSON file
 let gameFactoidsData = {};
-
-// Load games data from JSON file
-function loadGamesData() {
-  try {
-    if (fs.existsSync(dataPath)) {
-      const data = fs.readFileSync(dataPath, 'utf8');
-      gameFactoidsData = JSON.parse(data);
-      console.log('Games data loaded successfully');
-    } else {
-      console.log('Games data file not found, using defaults');
-      // Create default data file
-      gameFactoidsData = getDefaultGamesData();
-      saveGamesData();
-    }
-  } catch (error) {
-    console.error('Error loading games data:', error);
-    gameFactoidsData = getDefaultGamesData();
-  }
-}
-
-// Save games data to JSON file
-function saveGamesData() {
-  try {
-    // Ensure data directory exists
-    const dataDir = path.dirname(dataPath);
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-    
-    fs.writeFileSync(dataPath, JSON.stringify(gameFactoidsData, null, 2));
-    console.log('Games data saved successfully');
-    return true;
-  } catch (error) {
-    console.error('Error saving games data:', error);
-    return false;
-  }
-}
-
-// Default games data (fallback)
-function getDefaultGamesData() {
-  return {
-    default: {
-      displayName: "Gaming Facts",
-      facts: [
-        "Did you know? The first video game was created in 1958!",
-        "Did you know? Pac-Man was originally called Puck-Man in Japan!",
-        "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
-        "Did you know? Tetris was created by a Russian programmer in 1984!",
-        "Did you know? The first gaming console was the Magnavox Odyssey in 1972!"
-      ],
-      triggers: [
-        "During general gaming",
-        "When discussing retro games",
-        "During arcade discussion",
-        "When talking about puzzle games",
-        "During console discussion"
-      ]
-    }
-  };
-}
-
-// Create game manager window
-function createGameManagerWindow() {
-  if (gameManagerWindow) {
-    gameManagerWindow.focus();
-    return;
-  }
-
-  gameManagerWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+    halo_reach: {
+        facts: [
+            // Noble Actual
+            "The Visegrád relay's intel Noble Team retrieves reveals the Covenant were searching for a Forerunner artifact—hinting at a deeper religious motivation behind their invasion.",
+            // Winter Contingency
+            "Winter Contingency follows July 24, 2552 in-canon timeline—the precise moment Reach's planetary defense officially began to crumble.",
+            // ONI: Sword Base
+            "Sword Base is ONI-run—the module retrieved at Visegrád held data about Covenant theology, underscoring ONI's shadowy interest in alien religion.",
+            // Nightfall
+            "During Nightfall, the rural village resembles early civilian evacuation zones; in the *Fall of Reach* novel, civilians had already been fleeing days earlier.",
+            // Tip of the Spear
+            "'Tip of the Spear' mission occurs as UNSC discovers a cloaked Covenant supercarrier—this detection triggers Operation “Savannah” MAC-strike.",
+            // Long Night of Solace
+            "This mission mirrors Halo CE's Silent Cartographer with its beach assault and Warthog gameplay; Bungie called it a 'retread' with more epic scale.",
+            // Exodus
+            "Exodus is set during August 12-14 timeline; evacuations begin but are disorganized, contrasting sharply with later naval armadas in the books.",
+            // New Alexandria
+            "New Alexandria was one of the major population centers on Reach; it's glassed on August 18, showing just how abruptly civilian zones became combat zones.",
+            // The Package
+            "The 'Package' is actually Cortana—originally located at Sword Base for safekeeping before escort; explains why the Covenant targeted that location.",
+            // The Pillar of Autumn
+            "The Pillar's launch uses an ancient Covenant-marked slipspace trajectory stolen from Visegrád; that's why the Covenant's tracking device from Sigma Octanus led them.",
+            // Lone Wolf
+            "Lone Wolf is based on the 'Cole Protocol'—By leaving the Pillar of Autumn, Noble Six ensures Covenant can't follow it directly back to Earth."
+        ],
+        triggers: [
+            "At start of campaign 'Noble Actual'",
+            "Just before defending troopers in 'Winter Contingency'",
+            "Upon reaching ONI Sword Base",
+            "As rebels are rescued in 'Nightfall'",
+            "En route to EMP silos in 'Tip of the Spear'",
+            "Boarding the Covenant ship in 'Long Night of Solace'",
+            "Escorting civilians in 'Exodus'",
+            "Upon entering city ruins in 'New Alexandria'",
+            "When retrieving Cortana in 'The Package'",
+            "At Pelican launch in 'The Pillar of Autumn'",
+            "When running out alone in 'Lone Wolf'"
+        ]
     },
-    icon: path.join(__dirname, '../assets/icon.png'),
-    title: 'Game & Factoid Manager'
-  });
-
-  gameManagerWindow.loadFile(path.join(__dirname, '../public/game-manager.html'));
-
-  gameManagerWindow.on('closed', () => {
-    gameManagerWindow = null;
-  });
-}
+    minecraft: {
+        facts: [
+            "Did you know? Minecraft was originally called 'Cave Game' during development!",
+            "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
+            "Did you know? Minecraft has sold over 300 million copies worldwide!",
+            "Did you know? The first version of Minecraft was created in just 6 days!",
+            "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
+        ],
+        triggers: [
+            "When entering a cave",
+            "When encountering a Creeper",
+            "During building/crafting",
+            "At game start/world creation",
+            "When in The End dimension"
+        ]
+    },
+    valorant: {
+        facts: [
+            "Did you know? Valorant was codenamed 'Project A' during development!",
+            "Did you know? Sage's healing ability was inspired by MMO healing mechanics!",
+            "Did you know? Riot Games used anti-cheat technology from the kernel level!",
+            "Did you know? Valorant's maps are designed to be perfectly balanced for both teams!",
+            "Did you know? The game was designed to run on lower-end PCs to be accessible!"
+        ],
+        triggers: [
+            "During agent select",
+            "When playing Sage",
+            "At match start",
+            "When switching sides",
+            "During performance issues"
+        ]
+    },
+    csgo: {
+        facts: [
+            "Did you know? CS:GO was initially received poorly but became one of the most popular FPS games!",
+            "Did you know? The AK-47 in CS:GO can one-shot kill with a headshot even with a helmet!",
+            "Did you know? Dust2 is the most played map in Counter-Strike history!",
+            "Did you know? The bomb timer in competitive matches is exactly 40 seconds!",
+            "Did you know? CS:GO's weapon skins market is worth millions of dollars!"
+        ],
+        triggers: [
+            "At game launch",
+            "When buying AK-47",
+            "When loading Dust2",
+            "During bomb plant/defuse",
+            "When opening cases/inventory"
+        ]
+    },
+    cs2: {
+        facts: [
+            "Did you know? Counter-Strike 2 uses the Source 2 engine for better graphics!",
+            "Did you know? CS2 features completely redesigned smoke grenades with volumetric effects!",
+            "Did you know? All CS:GO items and progress carry over to Counter-Strike 2!",
+            "Did you know? CS2 has improved netcode for more responsive gameplay!",
+            "Did you know? The new sub-tick system makes shots more precise than ever!"
+        ],
+        triggers: [
+            "At game start",
+            "When throwing smokes",
+            "When viewing inventory",
+            "During competitive match",
+            "When discussing updates"
+        ]
+    },
+    overwatch: {
+        facts: [
+            "Did you know? Overwatch was built from the cancelled project 'Titan'!",
+            "Did you know? Tracer was the first character designed for Overwatch!",
+            "Did you know? Each Overwatch hero has over 20,000 lines of code!",
+            "Did you know? The game's art style was inspired by Pixar animations!",
+            "Did you know? Overwatch won Game of the Year at The Game Awards 2016!"
+        ],
+        triggers: [
+            "At game launch",
+            "When selecting Tracer",
+            "During hero abilities",
+            "During cutscenes",
+            "During awards discussion"
+        ]
+    },
+    default: {
+        facts: [
+            "Did you know? The first video game was created in 1958!",
+            "Did you know? Pac-Man was originally called Puck-Man in Japan!",
+            "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
+            "Did you know? Tetris was created by a Russian programmer in 1984!",
+            "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
+            "Did you know? The PlayStation was originally designed as a Nintendo console!",
+            "Did you know? The longest gaming session ever recorded was 138 hours!",
+            "Did you know? Super Mario's jump sound was created by accident!"
+        ],
+        triggers: [
+            "During general gaming",
+            "When discussing retro games",
+            "During arcade discussion",
+            "When talking about puzzle games",
+            "During console discussion",
+            "When discussing gaming history",
+            "During marathon streams",
+            "When discussing sound design"
+        ]
+    }
+};
 
 // Express server for serving the overlay UI
 function createExpressServer() {
@@ -159,9 +214,8 @@ function createExpressServer() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 575,
-    resizable: true,
+    width: 450,
+    height: 600,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -172,11 +226,6 @@ function createMainWindow() {
 
   mainWindow.loadFile(path.join(__dirname, '../public/control.html'));
 
-  mainWindow.webContents.once('did-finish-load', () => {
-    // Send initial games list when window loads
-    updateMainWindowGameList();
-  });
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -185,15 +234,11 @@ function createMainWindow() {
 function createOverlayWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   
-  // Use .env position values if set, otherwise default to top-right corner
-  const overlayX = config.overlayX !== null ? config.overlayX : width - (config.overlayWidth + 20);
-  const overlayY = config.overlayY !== null ? config.overlayY : 20;
-  
   overlayWindow = new BrowserWindow({
     width: config.overlayWidth,
     height: config.overlayHeight,
-    x: overlayX,
-    y: overlayY,
+    x: width - (config.overlayWidth + 20),
+    y: 20,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -297,38 +342,31 @@ function showRandomFactoid() {
 function detectCurrentGame() {
   // This is a placeholder - in a real implementation, you would detect running processes
   // For now, we'll cycle through games for demonstration
-  const availableGames = Object.keys(gameFactoidsData).filter(id => id !== 'default');
+  const games = [
+    { id: 'halo_reach', name: 'halo_reach.exe', displayName: 'Halo: Reach' },
+    { id: 'minecraft', name: 'minecraft.exe', displayName: 'Minecraft' },
+    { id: 'valorant', name: 'VALORANT.exe', displayName: 'Valorant' },
+    { id: 'csgo', name: 'csgo.exe', displayName: 'CS:GO' },
+    { id: 'cs2', name: 'cs2.exe', displayName: 'Counter-Strike 2' },
+    { id: 'overwatch', name: 'Overwatch.exe', displayName: 'Overwatch 2' },
+    { id: 'fortnite', name: 'FortniteClient-Win64-Shipping.exe', displayName: 'Fortnite' },
+    { id: 'leagueoflegends', name: 'League of Legends.exe', displayName: 'League of Legends' },
+    { id: 'dota2', name: 'dota2.exe', displayName: 'Dota 2' },
+    { id: 'worldofwarcraft', name: 'Wow.exe', displayName: 'World of Warcraft' },
+    { id: 'apex', name: 'r5apex.exe', displayName: 'Apex Legends' }
+  ];
   
-  if (availableGames.length > 0 && Math.random() > 0.3) {
-    const randomGameId = availableGames[Math.floor(Math.random() * availableGames.length)];
-    const gameData = gameFactoidsData[randomGameId];
-    const game = { 
-      id: randomGameId, 
-      name: `${randomGameId}.exe`, 
-      displayName: gameData.displayName || randomGameId 
-    };
-    console.log(`Detected game: ${game.displayName}`);
-    return game;
+  // For demonstration, randomly select a game (you can replace this with actual process detection)
+  if (Math.random() > 0.3) {
+    const randomGame = games[Math.floor(Math.random() * games.length)];
+    console.log(`Detected game: ${randomGame.displayName}`);
+    return randomGame;
   }
   
   return { id: 'default', name: '', displayName: 'Gaming Facts' };
 }
 
-// Update game list in main window
-function updateMainWindowGameList() {
-  if (mainWindow) {
-    const gamesList = Object.keys(gameFactoidsData).map(id => ({
-      id: id,
-      displayName: gameFactoidsData[id].displayName || id
-    }));
-    mainWindow.webContents.send('update-games-list', gamesList);
-  }
-}
-
 app.whenReady().then(() => {
-  // Load games data first
-  loadGamesData();
-  
   createMainWindow();
   createOverlayWindow();
   createExpressServer();
@@ -357,7 +395,7 @@ app.on('will-quit', () => {
   }
 });
 
-// IPC handlers for main functionality
+// IPC handlers
 ipcMain.on('show-factoid', () => {
   showRandomFactoid();
 });
@@ -536,195 +574,23 @@ ipcMain.on('update-hotkeys', (event, hotkeys) => {
   }
 });
 
-// IPC handlers for game management
-ipcMain.on('open-game-manager', () => {
-  createGameManagerWindow();
-});
-
-ipcMain.on('get-games-data', (event) => {
-  event.reply('games-data', gameFactoidsData);
-});
-
-ipcMain.on('add-game', (event, { gameId, gameData }) => {
-  if (gameFactoidsData[gameId]) {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Game ID already exists'
-    });
-    return;
-  }
-
-  gameFactoidsData[gameId] = gameData;
-  if (saveGamesData()) {
-    updateMainWindowGameList();
-    event.reply('game-operation-result', {
-      success: true,
-      message: `Game "${gameData.displayName}" added successfully`
-    });
-  } else {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Failed to save game data'
-    });
-  }
-});
-
-ipcMain.on('update-game', (event, { gameId, gameData }) => {
-  if (!gameFactoidsData[gameId]) {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Game not found'
-    });
-    return;
-  }
-
-  gameFactoidsData[gameId] = { ...gameFactoidsData[gameId], ...gameData };
-  if (saveGamesData()) {
-    updateMainWindowGameList();
-    event.reply('game-operation-result', {
-      success: true,
-      message: `Game "${gameData.displayName}" updated successfully`
-    });
-  } else {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Failed to save game data'
-    });
-  }
-});
-
-ipcMain.on('delete-game', (event, gameId) => {
-  if (!gameFactoidsData[gameId]) {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Game not found'
-    });
-    return;
-  }
-
-  if (gameId === 'default') {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Cannot delete the default game'
-    });
-    return;
-  }
-
-  const gameName = gameFactoidsData[gameId].displayName;
-  delete gameFactoidsData[gameId];
-  
-  if (saveGamesData()) {
-    updateMainWindowGameList();
-    event.reply('game-operation-result', {
-      success: true,
-      message: `Game "${gameName}" deleted successfully`
-    });
-  } else {
-    event.reply('game-operation-result', {
-      success: false,
-      message: 'Failed to save game data'
-    });
-  }
-});
-
-ipcMain.on('add-factoid', (event, { gameId, factoid, trigger }) => {
-  if (!gameFactoidsData[gameId]) {
-    event.reply('factoid-operation-result', {
-      success: false,
-      message: 'Game not found'
-    });
-    return;
-  }
-
-  if (!gameFactoidsData[gameId].facts) {
-    gameFactoidsData[gameId].facts = [];
-  }
-  if (!gameFactoidsData[gameId].triggers) {
-    gameFactoidsData[gameId].triggers = [];
-  }
-
-  gameFactoidsData[gameId].facts.push(factoid);
-  gameFactoidsData[gameId].triggers.push(trigger);
-
-  if (saveGamesData()) {
-    event.reply('factoid-operation-result', {
-      success: true,
-      message: 'Factoid added successfully'
-    });
-  } else {
-    event.reply('factoid-operation-result', {
-      success: false,
-      message: 'Failed to save factoid data'
-    });
-  }
-});
-
-ipcMain.on('update-factoid', (event, { gameId, index, factoid, trigger }) => {
-  if (!gameFactoidsData[gameId] || !gameFactoidsData[gameId].facts || !gameFactoidsData[gameId].facts[index]) {
-    event.reply('factoid-operation-result', {
-      success: false,
-      message: 'Factoid not found'
-    });
-    return;
-  }
-
-  gameFactoidsData[gameId].facts[index] = factoid;
-  if (gameFactoidsData[gameId].triggers) {
-    gameFactoidsData[gameId].triggers[index] = trigger;
-  }
-
-  if (saveGamesData()) {
-    event.reply('factoid-operation-result', {
-      success: true,
-      message: 'Factoid updated successfully'
-    });
-  } else {
-    event.reply('factoid-operation-result', {
-      success: false,
-      message: 'Failed to save factoid data'
-    });
-  }
-});
-
-ipcMain.on('delete-factoid', (event, { gameId, index }) => {
-  if (!gameFactoidsData[gameId] || !gameFactoidsData[gameId].facts || !gameFactoidsData[gameId].facts[index]) {
-    event.reply('factoid-operation-result', {
-      success: false,
-      message: 'Factoid not found'
-    });
-    return;
-  }
-
-  gameFactoidsData[gameId].facts.splice(index, 1);
-  if (gameFactoidsData[gameId].triggers) {
-    gameFactoidsData[gameId].triggers.splice(index, 1);
-  }
-
-  if (saveGamesData()) {
-    event.reply('factoid-operation-result', {
-      success: true,
-      message: 'Factoid deleted successfully'
-    });
-  } else {
-    event.reply('factoid-operation-result', {
-      success: false,
-      message: 'Failed to save factoid data'
-    });
-  }
-});
-
-ipcMain.on('close-game-manager', () => {
-  if (gameManagerWindow) {
-    gameManagerWindow.close();
-  }
-});
-
 // Function to show factoid for a specific game
 function showGameSpecificFactoid(gameId) {
-  const game = gameFactoidsData[gameId] ? {
-    id: gameId,
-    displayName: gameFactoidsData[gameId].displayName || gameId
-  } : { id: 'default', displayName: 'Gaming Facts' };
+  const games = {
+    minecraft: { id: 'minecraft', displayName: 'Minecraft' },
+    valorant: { id: 'valorant', displayName: 'Valorant' },
+    csgo: { id: 'csgo', displayName: 'CS:GO' },
+    cs2: { id: 'cs2', displayName: 'Counter-Strike 2' },
+    overwatch: { id: 'overwatch', displayName: 'Overwatch 2' },
+    fortnite: { id: 'fortnite', displayName: 'Fortnite' },
+    leagueoflegends: { id: 'leagueoflegends', displayName: 'League of Legends' },
+    dota2: { id: 'dota2', displayName: 'Dota 2' },
+    worldofwarcraft: { id: 'worldofwarcraft', displayName: 'World of Warcraft' },
+    apex: { id: 'apex', displayName: 'Apex Legends' },
+    default: { id: 'default', displayName: 'Gaming Facts' }
+  };
+
+  const game = games[gameId] || games.default;
   
   // Get or initialize the factoid index for this game
   if (!gameFactoidIndexes[gameId]) {

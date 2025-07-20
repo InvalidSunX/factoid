@@ -1,0 +1,98 @@
+{
+  "halo_reach": {
+    "displayName": "Halo: Reach",
+    "facts": [
+      "The Visegrád relay's intel Noble Team retrieves reveals the Covenant were searching for a Forerunner artifact—hinting at a deeper religious motivation behind their invasion.",
+      "Winter Contingency follows July 24, 2552 in-canon timeline—the precise moment Reach's planetary defense officially began to crumble.",
+      "Sword Base is ONI-run—the module retrieved at Visegrád held data about Covenant theology, underscoring ONI's shadowy interest in alien religion.",
+      "During Nightfall, the rural village resembles early civilian evacuation zones; in the *Fall of Reach* novel, civilians had already been fleeing days earlier.",
+      "'Tip of the Spear' mission occurs as UNSC discovers a cloaked Covenant supercarrier—this detection triggers Operation \"Savannah\" MAC-strike.",
+      "This mission mirrors Halo CE's Silent Cartographer with its beach assault and Warthog gameplay; Bungie called it a 'retread' with more epic scale.",
+      "Exodus is set during August 12-14 timeline; evacuations begin but are disorganized, contrasting sharply with later naval armadas in the books.",
+      "New Alexandria was one of the major population centers on Reach; it's glassed on August 18, showing just how abruptly civilian zones became combat zones.",
+      "The 'Package' is actually Cortana—originally located at Sword Base for safekeeping before escort; explains why the Covenant targeted that location.",
+      "The Pillar's launch uses an ancient Covenant-marked slipspace trajectory stolen from Visegrád; that's why the Covenant's tracking device from Sigma Octanus led them.",
+      "Lone Wolf is based on the 'Cole Protocol'—By leaving the Pillar of Autumn, Noble Six ensures Covenant can't follow it directly back to Earth."
+    ],
+    "triggers": [
+      "At start of campaign 'Noble Actual'",
+      "Just before defending troopers in 'Winter Contingency'",
+      "Upon reaching ONI Sword Base",
+      "As rebels are rescued in 'Nightfall'",
+      "En route to EMP silos in 'Tip of the Spear'",
+      "Boarding the Covenant ship in 'Long Night of Solace'",
+      "Escorting civilians in 'Exodus'",
+      "Upon entering city ruins in 'New Alexandria'",
+      "When retrieving Cortana in 'The Package'",
+      "At Pelican launch in 'The Pillar of Autumn'",
+      "When running out alone in 'Lone Wolf'"
+    ]
+  },
+  "minecraft": {
+    "displayName": "Minecraft",
+    "facts": [
+      "Did you know? Minecraft was originally called 'Cave Game' during development!",
+      "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
+      "Did you know? Minecraft has sold over 300 million copies worldwide!",
+      "Did you know? The first version of Minecraft was created in just 6 days!",
+      "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
+    ],
+    "triggers": [
+      "When entering a cave",
+      "When encountering a Creeper",
+      "During building/crafting",
+      "At game start/world creation",
+      "When in The End dimension"
+    ]
+  },
+  "default": {
+    "displayName": "Gaming Facts",
+    "facts": [
+      "Did you know? The first video game was created in 1958!",
+      "Did you know? Pac-Man was originally called Puck-Man in Japan!",
+      "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
+      "Did you know? Tetris was created by a Russian programmer in 1984!",
+      "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
+      "Did you know? The PlayStation was originally designed as a Nintendo console!",
+      "Did you know? The longest gaming session ever recorded was 138 hours!",
+      "Did you know? Super Mario's jump sound was created by accident!"
+    ],
+    "triggers": [
+      "During general gaming",
+      "When discussing retro games",
+      "During arcade discussion",
+      "When talking about puzzle games",
+      "During console discussion",
+      "When discussing gaming history",
+      "During marathon streams",
+      "When discussing sound design"
+    ]
+  },
+  "halo_ce": {
+    "displayName": "Halo: CE",
+    "facts": [
+      "In The Flood, there's a vivid depiction of Captain Keyes and Cortana realizing the ship must find a viable slipspace route—and Keyes struggles with the trauma following Reach’s fall, adding emotional weight missing in-game",
+      "The novel describes the Marines’ first awe-inspiring reaction to the ringworld’s alien flora in far greater depth—lining their helmets with wildlife references and confusion about the purpose of the fauna",
+      "Post-rescue, Keyes in the novel immediately searches for a Needler he dropped earlier—a small detail absent from dialogue but present in book lore",
+      "The Flood adds context: the UNSC marines coordinate to secure flank positions and estimate Covenant arrival times—marines even name off-Terrain callsigns that flesh out the op beyond what Cortana narrates in-game",
+      "The book notes the interior floodlights activate only after Chief makes progress—illustrating the Forerunner security protocol and atmospheric detail absent in-game",
+      "The novel portrays Spark pausing mid-statement as if calculating the long-term grammar of his speech—a subtle AI hesitancy that humanizes him slightly more than the game does",
+      "In The Flood, Master Chief struggles with the weight of the cascading library corridors, reflecting internally on Reach and earlier deaths—his psychological fatigue is far more explored than the tactical focus in-game",
+      "The novel includes an added scene of marines debating whether Spartan-IIs should assist them or bypass them, injecting tension to the narrative not present in the mission’s cutscenes",
+      "The Flood contains a chilling internal monologue from Keyes as the Flood digests his memories—he recalls misplacing his wedding ring and home before the infection fully takes hold",
+      "The book notes that Cortana manually stabilizes two primary reactor systems as Chief boards the fighter—she does this off-screen in the game, but The Flood gives it technical flavor"
+    ],
+    "triggers": [
+      "Just after the Pillar escapes slipspace and crash-lands on Halo",
+      "Upon stepping onto Halo’s surface",
+      "When rescuing Captain Keyes",
+      "Arriving on the beach ahead of the map room assault",
+      "When entering the Cartographer facility",
+      "When Guilty Spark addresses Chief about the Index",
+      "Upon entering the Library",
+      "When fighting Covenant through the archives",
+      "Discovering Keyes has been assimilated",
+      "Entering the reactor and starting self-destruct"
+    ]
+  }
+}

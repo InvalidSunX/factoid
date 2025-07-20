@@ -9,8 +9,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             color: white;
+            font-size: 12px;
         }
 
         .container {
@@ -18,37 +19,36 @@
             margin: 0 auto;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
         .control-panel {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 8px;
+            padding: 15px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .button-grid.single-column {
+            grid-template-columns: 1fr;
         }
 
         button {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             transition: all 0.3s ease;
+            text-align: center;
         }
 
         button:hover {
@@ -63,55 +63,57 @@
 
         .hotkey-info {
             background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 15px;
         }
 
         .hotkey-info h3 {
-            margin-top: 0;
+            margin: 0 0 8px 0;
             color: #00ff00;
+            font-size: 13px;
         }
 
         .hotkey-item {
-            margin: 8px 0;
-            font-size: 13px;
+            margin: 5px 0;
+            font-size: 11px;
         }
 
         .hotkey-combo {
             background: rgba(0, 0, 0, 0.3);
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 2px 6px;
+            border-radius: 3px;
             font-family: monospace;
             color: #00ff00;
+            font-size: 10px;
         }
 
         .status {
             text-align: center;
-            margin-top: 15px;
-            font-size: 12px;
+            margin-top: 10px;
+            font-size: 10px;
             opacity: 0.8;
         }
 
         .game-selector {
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .game-selector label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 5px;
+            font-size: 12px;
             font-weight: bold;
         }
 
         .game-selector select {
             width: 100%;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 6px;
+            border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            font-size: 14px;
+            font-size: 11px;
             cursor: pointer;
         }
 
@@ -122,35 +124,35 @@
 
         .trigger-cue-section {
             background: rgba(0, 255, 0, 0.1);
-            border: 2px solid rgba(0, 255, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            margin: 10px 0;
             text-align: center;
         }
 
         .trigger-cue-section h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             color: #00ff00;
-            font-size: 16px;
+            font-size: 12px;
         }
 
         .trigger-cue {
             background: rgba(0, 0, 0, 0.3);
             color: #00ff00;
-            font-size: 16px;
+            font-size: 11px;
             font-weight: bold;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 8px 0;
+            padding: 6px;
+            border-radius: 4px;
+            margin: 4px 0;
             border: 1px solid rgba(0, 255, 0, 0.5);
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+            text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
         }
 
         .factoid-progress {
-            font-size: 12px;
+            font-size: 10px;
             opacity: 0.8;
-            margin-top: 5px;
+            margin-top: 3px;
         }
 
         @keyframes flash {
@@ -161,136 +163,110 @@
 
         .config-panel {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 15px;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .config-panel h3 {
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0;
             color: #00ff00;
             text-align: center;
+            font-size: 14px;
         }
 
         .config-section {
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .config-section h4 {
-            margin: 0 0 10px 0;
+            margin: 0 0 6px 0;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .config-row {
             display: flex;
             align-items: center;
-            margin: 8px 0;
-            gap: 10px;
+            margin: 5px 0;
+            gap: 8px;
         }
 
         .config-row label {
-            min-width: 120px;
-            font-size: 12px;
+            min-width: 80px;
+            font-size: 10px;
         }
 
         .config-row input[type="color"] {
-            width: 40px;
-            height: 30px;
+            width: 30px;
+            height: 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: pointer;
         }
 
         .config-row input[type="range"] {
             flex: 1;
-            max-width: 100px;
+            max-width: 80px;
+        }
+
+        .config-row input[type="text"], .config-row input[type="number"] {
+            flex: 1;
+            padding: 4px 6px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 10px;
         }
 
         .config-row span {
-            font-size: 11px;
-            min-width: 50px;
+            font-size: 10px;
+            min-width: 40px;
             text-align: center;
         }
 
         .config-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+            margin-top: 10px;
         }
 
         .config-buttons button {
-            padding: 8px 15px;
-            font-size: 12px;
-        }
-
-        .hotkey-game-selector {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .hotkey-game-selector label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-            color: #00ff00;
-        }
-
-        .hotkey-game-selector select {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            font-size: 12px;
-        }
-
-        .hotkey-game-selector select option {
-            background: #2a2a2a;
-            color: white;
+            padding: 6px 8px;
+            font-size: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Factoid Overlay Control</h1>
-        
         <div class="control-panel">
-            <div class="button-group">
-                <button onclick="showFactoid()">Show Random Factoid</button>
-                <button onclick="hideOverlay()">Hide Overlay</button>
+            <div class="button-grid">
+                <button onclick="showFactoid()">🎯 Random Factoid</button>
+                <button onclick="hideOverlay()">👁️ Hide Overlay</button>
+                <button onclick="showGameSpecificFactoid()">🎮 Game Factoid</button>
+                <button onclick="resetFactoidOrder()">🔄 Reset Order</button>
+                <button onclick="toggleClickThrough()" id="clickThroughBtn">🖱️ Click-Through</button>
+                <button onclick="openConfigPanel()">⚙️ Configure</button>
+            </div>
+            
+            <div class="button-grid single-column">
+                <button onclick="openGameManager()">🎮 Manage Games & Factoids</button>
+            </div>
                 
-                <div class="trigger-cue-section">
-                    <h3>📺 Next Trigger Cue</h3>
-                    <div id="triggerCue" class="trigger-cue">Ready for factoid</div>
-                    <div id="factoidProgress" class="factoid-progress">Game: Auto-Detect | Factoid: 1/8</div>
-                </div>
-                
-                <div class="game-selector">
-                    <label for="gameSelect">Select Game:</label>
-                    <select id="gameSelect" onchange="updateSelectedGame()">
-                        <option value="default">Auto-Detect / General</option>
-                        <option value="minecraft">Minecraft</option>
-                        <option value="valorant">Valorant</option>
-                        <option value="csgo">CS:GO</option>
-                        <option value="cs2">Counter-Strike 2</option>
-                        <option value="overwatch">Overwatch 2</option>
-                        <option value="fortnite">Fortnite</option>
-                        <option value="leagueoflegends">League of Legends</option>
-                        <option value="dota2">Dota 2</option>
-                        <option value="worldofwarcraft">World of Warcraft</option>
-                        <option value="apex">Apex Legends</option>
-                    </select>
-                </div>
-                
-                <button onclick="showGameSpecificFactoid()">Show Game-Specific Factoid</button>
-                <button onclick="resetFactoidOrder()">Reset Factoid Order</button>
-                <button onclick="toggleClickThrough()" id="clickThroughBtn">Toggle Click-Through</button>
-                <button onclick="openConfigPanel()">⚙️ Configure Overlay</button>
+            <div class="trigger-cue-section">
+                <h3>📺 Next Trigger Cue</h3>
+                <div id="triggerCue" class="trigger-cue">Ready for factoid</div>
+                <div id="factoidProgress" class="factoid-progress">Game: Auto-Detect | Factoid: 1/8</div>
+            </div>
+            
+            <div class="game-selector">
+                <label for="gameSelect">Select Game (for buttons & hotkey):</label>
+                <select id="gameSelect" onchange="updateSelectedGame()">
+                    <option value="default">Auto-Detect / General</option>
+                </select>
             </div>
 
             <div id="configPanel" class="config-panel" style="display: none;">
@@ -357,7 +333,7 @@
                     <div class="config-row">
                         <label for="portInput">Server Port:</label>
                         <input type="number" id="portInput" min="1000" max="65535" value="3000" style="width: 80px; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
-                        <button onclick="updatePort()" style="padding: 5px 10px; font-size: 11px;">Update Port</button>
+                        <button onclick="updatePort()" style="padding: 4px 8px; font-size: 9px;">Update Port</button>
                     </div>
                 </div>
                 
@@ -365,20 +341,20 @@
                     <h4>Hotkey Settings</h4>
                     <div class="config-row">
                         <label for="showFactoidHotkeyInput">Show Factoid:</label>
-                        <input type="text" id="showFactoidHotkeyInput" placeholder="Ctrl+Shift+F" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                        <input type="text" id="showFactoidHotkeyInput" placeholder="Ctrl+Shift+F">
                     </div>
                     <div class="config-row">
                         <label for="hideOverlayHotkeyInput">Hide Overlay:</label>
-                        <input type="text" id="hideOverlayHotkeyInput" placeholder="Ctrl+Shift+H" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                        <input type="text" id="hideOverlayHotkeyInput" placeholder="Ctrl+Shift+H">
                     </div>
                     <div class="config-row">
                         <label for="gameSpecificHotkeyInput">Game-Specific:</label>
-                        <input type="text" id="gameSpecificHotkeyInput" placeholder="Ctrl+Shift+G" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                        <input type="text" id="gameSpecificHotkeyInput" placeholder="Ctrl+Shift+G">
                     </div>
                     <div class="config-row">
-                        <button onclick="updateHotkeys()" style="width: 100%; padding: 8px; font-size: 12px;">Update Hotkeys</button>
+                        <button onclick="updateHotkeys()" style="width: 100%; padding: 6px; font-size: 10px;">Update Hotkeys</button>
                     </div>
-                    <div class="config-row" style="font-size: 11px; opacity: 0.8; text-align: center;">
+                    <div class="config-row" style="font-size: 9px; opacity: 0.8; text-align: center;">
                         Use format: Ctrl+Shift+Key or CommandOrControl+Shift+Key
                     </div>
                 </div>
@@ -399,24 +375,7 @@
                     <span class="hotkey-combo" id="hideOverlayHotkey">Ctrl + Shift + H</span> - Hide overlay
                 </div>
                 <div class="hotkey-item">
-                    <span class="hotkey-combo" id="gameSpecificHotkey">Ctrl + Shift + G</span> - Show game-specific factoid
-                </div>
-                
-                <div class="hotkey-game-selector">
-                    <label for="hotkeyGameSelect">Game for Ctrl+Shift+G:</label>
-                    <select id="hotkeyGameSelect" onchange="updateHotkeyGame()">
-                        <option value="default">Auto-Detect / General</option>
-                        <option value="minecraft">Minecraft</option>
-                        <option value="valorant">Valorant</option>
-                        <option value="csgo">CS:GO</option>
-                        <option value="cs2">Counter-Strike 2</option>
-                        <option value="overwatch">Overwatch 2</option>
-                        <option value="fortnite">Fortnite</option>
-                        <option value="leagueoflegends">League of Legends</option>
-                        <option value="dota2">Dota 2</option>
-                        <option value="worldofwarcraft">World of Warcraft</option>
-                        <option value="apex">Apex Legends</option>
-                    </select>
+                    <span class="hotkey-combo" id="gameSpecificHotkey">Ctrl + Shift + G</span> - Show game-specific factoid (uses selected game above)
                 </div>
             </div>
 
@@ -442,6 +401,8 @@
         function updateSelectedGame() {
             const select = document.getElementById('gameSelect');
             selectedGame = select.value;
+            // Also update the hotkey game to match the selected game
+            ipcRenderer.send('set-hotkey-game', selectedGame);
         }
 
         function showGameSpecificFactoid() {
@@ -456,9 +417,8 @@
             ipcRenderer.send('toggle-click-through');
         }
 
-        function updateHotkeyGame() {
-            const select = document.getElementById('hotkeyGameSelect');
-            ipcRenderer.send('set-hotkey-game', select.value);
+        function openGameManager() {
+            ipcRenderer.send('open-game-manager');
         }
 
         function openConfigPanel() {
@@ -609,17 +569,57 @@
             // Update port input field
             document.getElementById('portInput').value = config.port;
             
-            // Update hotkey game selector
-            document.getElementById('hotkeyGameSelect').value = config.selectedGameForHotkey;
+            // Update main game selector to match hotkey game
+            const gameSelect = document.getElementById('gameSelect');
+            if (gameSelect.querySelector(`option[value="${config.selectedGameForHotkey}"]`)) {
+                gameSelect.value = config.selectedGameForHotkey;
+                selectedGame = config.selectedGameForHotkey;
+            }
             
             // Update status display
             const statusElement = document.querySelector('.status');
             statusElement.textContent = `Overlay server running on localhost:${config.port}`;
         });
 
+        // Listen for games list updates
+        ipcRenderer.on('update-games-list', (event, gamesList) => {
+            updateGameSelectDropdowns(gamesList);
+        });
+
+        function updateGameSelectDropdowns(gamesList) {
+            const gameSelect = document.getElementById('gameSelect');
+            
+            // Store current selection
+            const currentGame = gameSelect.value;
+            
+            // Clear and rebuild dropdown
+            gameSelect.innerHTML = '<option value="default">Auto-Detect / General</option>';
+            
+            gamesList.forEach(game => {
+                if (game.id !== 'default') {
+                    const option = document.createElement('option');
+                    option.value = game.id;
+                    option.textContent = game.displayName;
+                    gameSelect.appendChild(option);
+                }
+            });
+            
+            // Restore selection if it still exists
+            if (gameSelect.querySelector(`option[value="${currentGame}"]`)) {
+                gameSelect.value = currentGame;
+                selectedGame = currentGame;
+            } else {
+                selectedGame = 'default';
+            }
+        }
+
         // Listen for hotkey game updates
         ipcRenderer.on('hotkey-game-updated', (event, gameId) => {
-            document.getElementById('hotkeyGameSelect').value = gameId;
+            const gameSelect = document.getElementById('gameSelect');
+            if (gameSelect.querySelector(`option[value="${gameId}"]`)) {
+                gameSelect.value = gameId;
+                selectedGame = gameId;
+            }
             console.log(`Hotkey game updated to: ${gameId}`);
         });
 
