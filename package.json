@@ -1,12 +1,23 @@
 {
   "name": "factoid-overlay",
   "version": "1.0.0",
-  "description": "A stream overlay to present facts about the game being played. A simple 'Did You Know?' desktop overlay with global hotkey support.",
+  "description": "A desktop overlay application that displays factoids during gameplay. Built for streamers and content creators with global hotkey support and complete game management.",
   "main": "src/main.js",
+  "homepage": "https://github.com/InvalidSunX/factoid",
+  "author": {
+    "name": "InvalidSunX",
+    "email": "rval2359@gmail.com"
+  },
+  "license": "MIT",
   "scripts": {
     "start": "electron src/main.js",
     "dev": "nodemon --exec electron src/main.js",
-    "build": "echo 'Build script placeholder'",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:win-portable": "electron-builder --win portable",
+    "build:all": "electron-builder --win --mac --linux",
+    "dist": "npm run build",
+    "pack": "electron-builder --dir",
     "test": "echo 'No tests specified'"
   },
   "keywords": [
@@ -15,20 +26,95 @@
     "factoid",
     "desktop",
     "electron",
-    "gaming"
+    "gaming",
+    "twitch",
+    "obs",
+    "content-creation"
   ],
-  "author": "InvalidSunX",
-  "license": "MIT",
   "dependencies": {
-    "electron": "^28.0.0",
     "globalkey": "^1.0.0",
     "express": "^4.18.2",
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "electron": "^28.0.0",
+    "nodemon": "^3.0.2",
+    "electron-builder": "^24.9.1"
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "build": {
+    "appId": "com.invalidsunx.factoid-overlay",
+    "productName": "Factoid Overlay",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "data/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json",
+      ".env.example"
+    ],
+    "extraResources": [
+      {
+        "from": ".env.example",
+        "to": ".env.example"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "publisherName": "InvalidSunX",
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "category": "public.app-category.entertainment"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
+      ],
+      "category": "Game"
+    },
+    "publish": null
   }
 }
