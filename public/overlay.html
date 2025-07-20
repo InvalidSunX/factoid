@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factoid Overlay</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .factoid-container {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(30, 30, 30, 0.9));
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 0;
+            margin: 10px;
+            color: #ffffff;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.5s ease-out;
+            transform: scale(1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .factoid-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            z-index: -1;
+            border-radius: 12px;
+        }
+
+        .factoid-container.show {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .title-header {
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            color: #000000;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 12px 20px;
+            margin: 0;
+            border-radius: 12px 12px 0 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .game-title {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 8px 15px;
+            margin: 0;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .factoid-content {
+            padding: 15px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .factoid-text {
+            margin: 0;
+            line-height: 1.4;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Game-specific background themes */
+        .factoid-container[data-game="minecraft"]::before {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOEM2MjM5Ii8+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzVEOUMzMyIvPgo8cmVjdCB4PSIxMCIgeT0iMTAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzVEOUMzMyIvPgo8L3N2Zz4K');
+        }
+
+        .factoid-container[data-game="valorant"]::before {
+            background-image: linear-gradient(135deg, rgba(255,70,85,0.4), rgba(0,0,0,0.6));
+        }
+
+        .factoid-container[data-game="csgo"]::before,
+        .factoid-container[data-game="cs2"]::before {
+            background-image: linear-gradient(135deg, rgba(255,165,0,0.4), rgba(139,69,19,0.6));
+        }
+
+        .factoid-container[data-game="overwatch"]::before {
+            background-image: linear-gradient(135deg, rgba(249,153,28,0.4), rgba(0,174,255,0.4));
+        }
+
+        .factoid-container[data-game="fortnite"]::before {
+            background-image: linear-gradient(135deg, rgba(138,43,226,0.4), rgba(0,191,255,0.4));
+        }
+
+        .factoid-container[data-game="leagueoflegends"]::before {
+            background-image: linear-gradient(135deg, rgba(200,155,60,0.4), rgba(15,35,65,0.6));
+        }
+
+        .factoid-container[data-game="dota2"]::before {
+            background-image: linear-gradient(135deg, rgba(255,0,0,0.4), rgba(139,0,0,0.6));
+        }
+
+        .factoid-container[data-game="worldofwarcraft"]::before {
+            background-image: linear-gradient(135deg, rgba(0,119,190,0.4), rgba(255,209,0,0.4));
+        }
+
+        .factoid-container[data-game="apex"]::before {
+            background-image: linear-gradient(135deg, rgba(255,108,17,0.4), rgba(139,69,19,0.6));
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .factoid-container.hiding {
+            animation: slideOut 0.5s ease-in;
+        }
+
+        /* Scalable design for different screen sizes */
+        @media (max-width: 1920px) {
+            .factoid-container {
+                font-size: 14px;
+            }
+            .title-header {
+                font-size: 16px;
+                padding: 10px 18px;
+            }
+            .game-title {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .factoid-content {
+                padding: 12px 18px;
+            }
+        }
+
+        @media (max-width: 1366px) {
+            .factoid-container {
+                font-size: 12px;
+            }
+            .title-header {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+            .game-title {
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+            .factoid-content {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <div id="factoidContainer" class="factoid-container" data-game="default" style="display: none;">
+        <div class="title-header">Did You Know?</div>
+        <div id="gameTitle" class="game-title">Gaming Facts</div>
+        <div class="factoid-content">
+            <p id="factoidText" class="factoid-text">Did you know?</p>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        const factoidContainer = document.getElementById('factoidContainer');
+        const factoidText = document.getElementById('factoidText');
+        const gameTitle = document.getElementById('gameTitle');
+
+        // Listen for factoid display requests
+        ipcRenderer.on('show-factoid', (event, data) => {
+            if (data && data.text) {
+                factoidText.textContent = data.text;
+                
+                // Set game title and background
+                if (data.game) {
+                    gameTitle.textContent = data.game.displayName || data.game.name || 'Gaming Facts';
+                    factoidContainer.setAttribute('data-game', data.game.id || 'default');
+                } else {
+                    gameTitle.textContent = 'Gaming Facts';
+                    factoidContainer.setAttribute('data-game', 'default');
+                }
+                
+                factoidContainer.style.display = 'block';
+                factoidContainer.classList.add('show');
+                
+                // Remove the show class after animation
+                setTimeout(() => {
+                    factoidContainer.classList.remove('show');
+                }, 300);
+            }
+        });
+
+        // Listen for hide requests
+        ipcRenderer.on('hide-factoid', () => {
+            factoidContainer.classList.add('hiding');
+            setTimeout(() => {
+                factoidContainer.style.display = 'none';
+                factoidContainer.classList.remove('hiding');
+            }, 500);
+        });
+
+        // Auto-scale based on content length
+        function adjustScale() {
+            const textLength = factoidText.textContent.length;
+            if (textLength > 100) {
+                factoidContainer.style.width = '450px';
+            } else if (textLength > 80) {
+                factoidContainer.style.width = '420px';
+            } else {
+                factoidContainer.style.width = '400px';
+            }
+        }
+
+        // Observer to adjust scale when content changes
+        const observer = new MutationObserver(adjustScale);
+        observer.observe(factoidText, { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>
