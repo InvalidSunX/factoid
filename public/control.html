@@ -225,6 +225,34 @@
             padding: 8px 15px;
             font-size: 12px;
         }
+
+        .hotkey-game-selector {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hotkey-game-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #00ff00;
+        }
+
+        .hotkey-game-selector select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 12px;
+        }
+
+        .hotkey-game-selector select option {
+            background: #2a2a2a;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -323,10 +351,30 @@
             <div class="hotkey-info">
                 <h3>⌨️ Global Hotkeys</h3>
                 <div class="hotkey-item">
-                    <span class="hotkey-combo">Ctrl + Shift + F</span> - Show random factoid
+                    <span class="hotkey-combo" id="showFactoidHotkey">Ctrl + Shift + F</span> - Show random factoid
                 </div>
                 <div class="hotkey-item">
-                    <span class="hotkey-combo">Ctrl + Shift + H</span> - Hide overlay
+                    <span class="hotkey-combo" id="hideOverlayHotkey">Ctrl + Shift + H</span> - Hide overlay
+                </div>
+                <div class="hotkey-item">
+                    <span class="hotkey-combo" id="gameSpecificHotkey">Ctrl + Shift + G</span> - Show game-specific factoid
+                </div>
+                
+                <div class="hotkey-game-selector">
+                    <label for="hotkeyGameSelect">Game for Ctrl+Shift+G:</label>
+                    <select id="hotkeyGameSelect" onchange="updateHotkeyGame()">
+                        <option value="default">Auto-Detect / General</option>
+                        <option value="minecraft">Minecraft</option>
+                        <option value="valorant">Valorant</option>
+                        <option value="csgo">CS:GO</option>
+                        <option value="cs2">Counter-Strike 2</option>
+                        <option value="overwatch">Overwatch 2</option>
+                        <option value="fortnite">Fortnite</option>
+                        <option value="leagueoflegends">League of Legends</option>
+                        <option value="dota2">Dota 2</option>
+                        <option value="worldofwarcraft">World of Warcraft</option>
+                        <option value="apex">Apex Legends</option>
+                    </select>
                 </div>
             </div>
 
@@ -364,6 +412,11 @@
 
         function toggleClickThrough() {
             ipcRenderer.send('toggle-click-through');
+        }
+
+        function updateHotkeyGame() {
+            const select = document.getElementById('hotkeyGameSelect');
+            ipcRenderer.send('set-hotkey-game', select.value);
         }
 
         function openConfigPanel() {
@@ -462,6 +515,27 @@
             updateSliderValues();
         });
 
+        // Listen for configuration data including hotkeys
+        ipcRenderer.on('config-data', (event, config) => {
+            // Update hotkey display
+            document.getElementById('showFactoidHotkey').textContent = config.showFactoidHotkey.replace('CommandOrControl', 'Ctrl');
+            document.getElementById('hideOverlayHotkey').textContent = config.hideOverlayHotkey.replace('CommandOrControl', 'Ctrl');
+            document.getElementById('gameSpecificHotkey').textContent = config.showGameSpecificHotkey.replace('CommandOrControl', 'Ctrl');
+            
+            // Update hotkey game selector
+            document.getElementById('hotkeyGameSelect').value = config.selectedGameForHotkey;
+            
+            // Update status display
+            const statusElement = document.querySelector('.status');
+            statusElement.textContent = `Overlay server running on localhost:${config.port}`;
+        });
+
+        // Listen for hotkey game updates
+        ipcRenderer.on('hotkey-game-updated', (event, gameId) => {
+            document.getElementById('hotkeyGameSelect').value = gameId;
+            console.log(`Hotkey game updated to: ${gameId}`);
+        });
+
         // Add some visual feedback
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('button');
@@ -480,6 +554,9 @@
             
             // Initial values
             updateSliderValues();
+            
+            // Request initial configuration data
+            ipcRenderer.send('get-config');
         });
     </script>
 </body>

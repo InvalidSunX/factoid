@@ -1,15 +1,28 @@
 const { app, BrowserWindow, globalShortcut, ipcMain, screen } = require('electron');
 const path = require('path');
 const express = require('express');
+require('dotenv').config();
 
 let mainWindow;
 let overlayWindow;
 let expressApp;
 let server;
 
+// Get configuration from environment variables with defaults
+const config = {
+  port: process.env.PORT || 3000,
+  showFactoidHotkey: process.env.SHOW_FACTOID_HOTKEY || 'CommandOrControl+Shift+F',
+  hideOverlayHotkey: process.env.HIDE_OVERLAY_HOTKEY || 'CommandOrControl+Shift+H',
+  showGameSpecificHotkey: process.env.SHOW_GAME_SPECIFIC_HOTKEY || 'CommandOrControl+Shift+G',
+  defaultGame: process.env.DEFAULT_GAME || 'default',
+  overlayWidth: parseInt(process.env.DEFAULT_OVERLAY_WIDTH) || 420,
+  overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180
+};
+
 // Factoid tracking system
 let gameFactoidIndexes = {};
 let currentTriggerCue = "Ready for factoid";
+let selectedGameForHotkey = config.defaultGame; // Track selected game for hotkey
 
 // Configuration settings
 let overlayConfig = {
@@ -133,7 +146,7 @@ const gameFactoidsData = {
 // Express server for serving the overlay UI
 function createExpressServer() {
   expressApp = express();
-  const PORT = 3000;
+  const PORT = config.port;
 
   // Serve static files from public directory
   expressApp.use(express.static(path.join(__dirname, '../public')));
@@ -176,9 +189,9 @@ function createOverlayWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   
   overlayWindow = new BrowserWindow({
-    width: 420,
-    height: 180,
-    x: width - 440,
+    width: config.overlayWidth,
+    height: config.overlayHeight,
+    x: width - (config.overlayWidth + 20),
     y: 20,
     frame: false,
     transparent: true,
@@ -202,21 +215,34 @@ function createOverlayWindow() {
 }
 
 function registerGlobalHotkeys() {
-  // Register global hotkey to show factoid (Ctrl+Shift+F)
-  globalShortcut.register('CommandOrControl+Shift+F', () => {
-    console.log('Global hotkey triggered: Show factoid');
+  // Register global hotkey to show factoid
+  globalShortcut.register(config.showFactoidHotkey, () => {
+    console.log(`Global hotkey triggered (${config.showFactoidHotkey}): Show factoid`);
     if (overlayWindow) {
       showRandomFactoid();
     }
   });
 
-  // Register global hotkey to hide overlay (Ctrl+Shift+H)
-  globalShortcut.register('CommandOrControl+Shift+H', () => {
-    console.log('Global hotkey triggered: Hide overlay');
+  // Register global hotkey to hide overlay
+  globalShortcut.register(config.hideOverlayHotkey, () => {
+    console.log(`Global hotkey triggered (${config.hideOverlayHotkey}): Hide overlay`);
     if (overlayWindow) {
       overlayWindow.hide();
     }
   });
+
+  // Register global hotkey to show game-specific factoid
+  globalShortcut.register(config.showGameSpecificHotkey, () => {
+    console.log(`Global hotkey triggered (${config.showGameSpecificHotkey}): Show game-specific factoid`);
+    if (overlayWindow) {
+      showGameSpecificFactoid(selectedGameForHotkey);
+    }
+  });
+
+  console.log('Global hotkeys registered:');
+  console.log(`- Show factoid: ${config.showFactoidHotkey}`);
+  console.log(`- Hide overlay: ${config.hideOverlayHotkey}`);
+  console.log(`- Show game-specific factoid: ${config.showGameSpecificHotkey}`);
 }
 
 function showRandomFactoid() {
@@ -385,6 +411,23 @@ ipcMain.on('move-overlay-window', (event, position) => {
   if (overlayWindow) {
     overlayWindow.setPosition(position.x, position.y);
   }
+});
+
+ipcMain.on('set-hotkey-game', (event, gameId) => {
+  selectedGameForHotkey = gameId;
+  console.log(`Game-specific hotkey now set to: ${gameId}`);
+  
+  // Send confirmation to main window
+  if (mainWindow) {
+    mainWindow.webContents.send('hotkey-game-updated', gameId);
+  }
+});
+
+ipcMain.on('get-config', (event) => {
+  event.reply('config-data', {
+    ...config,
+    selectedGameForHotkey
+  });
 });
 
 // Function to show factoid for a specific game

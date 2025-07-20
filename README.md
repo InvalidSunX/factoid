@@ -5,10 +5,18 @@ A desktop overlay application for streamers to display "Did You Know?" factoids 
 ## Features
 
 - **Desktop Overlay**: Transparent, always-on-top overlay that appears over any application
-- **Global Hotkeys**: Control the overlay from anywhere with keyboard shortcuts
+- **Global Hotkeys**: 
+  - `Ctrl + Shift + F` - Show random factoid
+  - `Ctrl + Shift + H` - Hide overlay  
+  - `Ctrl + Shift + G` - Show game-specific factoid
+- **Configurable Hotkeys**: Customize hotkey combinations via .env file
 - **Scalable UI**: Automatically adjusts size based on content and screen resolution
+- **Movable Overlay**: Click and drag to position anywhere on screen
+- **Color Customization**: Full color and style configuration panel
+- **Ordered Factoids**: Sequential display with trigger timing cues
+- **Game-Specific Facts**: Tailored factoids for different games
 - **Streaming Ready**: Designed for use with OBS, Streamlabs, and other streaming software
-- **Customizable**: Easy to modify factoids and styling
+- **Port Configuration**: Customizable server port via environment variables
 
 ## Quick Start
 
@@ -17,14 +25,21 @@ A desktop overlay application for streamers to display "Did You Know?" factoids 
    npm install
    ```
 
-2. **Run the Application**
+2. **Configure Environment (Optional)**
+   ```bash
+   cp .env.example .env
+   # Edit .env to customize ports and hotkeys
+   ```
+
+3. **Run the Application**
    ```bash
    npm start
    ```
 
-3. **Use Global Hotkeys**
+4. **Use Global Hotkeys**
    - `Ctrl + Shift + F` - Show random factoid
    - `Ctrl + Shift + H` - Hide overlay
+   - `Ctrl + Shift + G` - Show game-specific factoid
 
 ## How It Works
 
@@ -46,6 +61,42 @@ factoid/
 ├── package.json          # Dependencies and scripts
 └── README.md            # This file
 ```
+
+## Configuration
+
+### Environment Variables (.env file)
+
+Create a `.env` file in the root directory to customize settings:
+
+```bash
+# Server port (default: 3000)
+PORT=3000
+
+# Global hotkeys - customize these combinations
+SHOW_FACTOID_HOTKEY=CommandOrControl+Shift+F
+HIDE_OVERLAY_HOTKEY=CommandOrControl+Shift+H
+SHOW_GAME_SPECIFIC_HOTKEY=CommandOrControl+Shift+G
+
+# Default game for game-specific hotkey
+DEFAULT_GAME=default
+
+# Overlay dimensions
+DEFAULT_OVERLAY_WIDTH=420
+DEFAULT_OVERLAY_HEIGHT=180
+```
+
+### Hotkey Modifiers
+Available modifiers for hotkeys:
+- `CommandOrControl` - Ctrl on Windows/Linux, Cmd on Mac
+- `Alt` - Alt key
+- `Shift` - Shift key
+- `Super` - Windows key
+
+### Game-Specific Hotkey
+The `Ctrl + Shift + G` hotkey (or your custom combination) shows factoids for a specific game:
+1. Select the game in the "Game for Ctrl+Shift+G" dropdown
+2. Use the hotkey to show factoids only for that game
+3. Perfect for when you're playing a specific game and want targeted facts
 
 ## Customization
 
