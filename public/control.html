@@ -311,6 +311,16 @@
                         <input type="range" id="shadowOpacity" min="0" max="100" value="60">
                         <span id="shadowOpacityValue">0.6</span>
                     </div>
+                    
+                    <div class="config-row">
+                        <label for="gameFactsBgColor">Game Facts Background:</label>
+                        <input type="color" id="gameFactsBgColor" value="#00ff00">
+                    </div>
+                    
+                    <div class="config-row">
+                        <label for="gameFactsTextColor">Game Facts Text:</label>
+                        <input type="color" id="gameFactsTextColor" value="#00ff00">
+                    </div>
                 </div>
                 
                 <div class="config-section">
@@ -325,6 +335,20 @@
                         <label for="fontSize">Font Size:</label>
                         <input type="range" id="fontSize" min="12" max="24" value="16">
                         <span id="fontSizeValue">16px</span>
+                    </div>
+                    
+                    <div class="config-row">
+                        <label for="animationDirection">Animation:</label>
+                        <select id="animationDirection" style="width: 120px; padding: 4px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-size: 10px;">
+                            <option value="slideRight">Slide Right</option>
+                            <option value="slideLeft">Slide Left</option>
+                        </select>
+                    </div>
+                    
+                    <div class="config-row">
+                        <label for="displayDuration">Display Duration:</label>
+                        <input type="range" id="displayDuration" min="3" max="30" value="15">
+                        <span id="displayDurationValue">15s</span>
                     </div>
                 </div>
                 
@@ -443,7 +467,11 @@
                 borderRadius: document.getElementById('borderRadius').value + 'px',
                 fontSize: document.getElementById('fontSize').value + 'px',
                 shadowColor: document.getElementById('shadowColor').value,
-                shadowOpacity: document.getElementById('shadowOpacity').value / 100
+                shadowOpacity: document.getElementById('shadowOpacity').value / 100,
+                gameFactsBackgroundColor: hexToRgba(document.getElementById('gameFactsBgColor').value, 0.1),
+                gameFactsTextColor: document.getElementById('gameFactsTextColor').value,
+                animationDirection: document.getElementById('animationDirection').value,
+                displayDuration: document.getElementById('displayDuration').value * 1000 // Convert seconds to milliseconds
             };
             
             ipcRenderer.send('update-overlay-config', config);
@@ -460,6 +488,10 @@
             document.getElementById('fontSize').value = 16;
             document.getElementById('shadowColor').value = '#00ff00';
             document.getElementById('shadowOpacity').value = 60;
+            document.getElementById('gameFactsBgColor').value = '#00ff00';
+            document.getElementById('gameFactsTextColor').value = '#00ff00';
+            document.getElementById('animationDirection').value = 'slideRight';
+            document.getElementById('displayDuration').value = 15;
             
             updateSliderValues();
             applyConfig();
@@ -487,6 +519,11 @@
                 return;
             }
             
+            // Convert 'Control' to 'CommandOrControl' for cross-platform compatibility
+            hotkeys.showFactoid = hotkeys.showFactoid.replace(/^Control\+/g, 'CommandOrControl+');
+            hotkeys.hideOverlay = hotkeys.hideOverlay.replace(/^Control\+/g, 'CommandOrControl+');
+            hotkeys.showGameSpecific = hotkeys.showGameSpecific.replace(/^Control\+/g, 'CommandOrControl+');
+            
             ipcRenderer.send('update-hotkeys', hotkeys);
         }
 
@@ -501,6 +538,7 @@
             document.getElementById('borderRadiusValue').textContent = document.getElementById('borderRadius').value + 'px';
             document.getElementById('fontSizeValue').textContent = document.getElementById('fontSize').value + 'px';
             document.getElementById('shadowOpacityValue').textContent = (document.getElementById('shadowOpacity').value / 100).toFixed(1);
+            document.getElementById('displayDurationValue').textContent = document.getElementById('displayDuration').value + 's';
         }
 
         // Listen for trigger cue updates
@@ -541,6 +579,15 @@
             document.getElementById('borderColor').value = config.borderColor;
             document.getElementById('textColor').value = config.textColor;
             document.getElementById('titleTextColor').value = config.titleTextColor;
+            
+            // Extract title background color from linear gradient
+            if (config.titleBackgroundColor) {
+                const titleBgMatch = config.titleBackgroundColor.match(/#[0-9a-fA-F]{6}/);
+                if (titleBgMatch) {
+                    document.getElementById('titleBgColor').value = titleBgMatch[0];
+                }
+            }
+            
             document.getElementById('borderRadius').value = parseInt(config.borderRadius);
             document.getElementById('fontSize').value = parseInt(config.fontSize);
             
@@ -549,6 +596,27 @@
             }
             if (config.shadowOpacity !== undefined) {
                 document.getElementById('shadowOpacity').value = Math.round(config.shadowOpacity * 100);
+            }
+            if (config.animationDirection) {
+                document.getElementById('animationDirection').value = config.animationDirection;
+            }
+            if (config.gameFactsTextColor) {
+                document.getElementById('gameFactsTextColor').value = config.gameFactsTextColor;
+            }
+            if (config.displayDuration) {
+                document.getElementById('displayDuration').value = config.displayDuration / 1000; // Convert to seconds
+            }
+            
+            // Extract game facts background color from rgba
+            if (config.gameFactsBackgroundColor) {
+                const gameFactsBgMatch = config.gameFactsBackgroundColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (gameFactsBgMatch) {
+                    const hex = '#' + [gameFactsBgMatch[1], gameFactsBgMatch[2], gameFactsBgMatch[3]].map(x => {
+                        const hex = parseInt(x).toString(16);
+                        return hex.length === 1 ? '0' + hex : hex;
+                    }).join('');
+                    document.getElementById('gameFactsBgColor').value = hex;
+                }
             }
             
             updateSliderValues();
@@ -639,6 +707,7 @@
             document.getElementById('borderRadius').addEventListener('input', updateSliderValues);
             document.getElementById('fontSize').addEventListener('input', updateSliderValues);
             document.getElementById('shadowOpacity').addEventListener('input', updateSliderValues);
+            document.getElementById('displayDuration').addEventListener('input', updateSliderValues);
             
             // Initial values
             updateSliderValues();

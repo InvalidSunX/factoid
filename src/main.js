@@ -10,41 +10,74 @@ let gameManagerWindow;
 let expressApp;
 let server;
 
-// Data file path
+// Data file paths
 const dataPath = path.join(__dirname, '../data/games.json');
+const configPath = path.join(__dirname, '../data/config.json');
 
-// Get configuration from environment variables with defaults
-const config = {
-  port: process.env.PORT || 3000,
-  showFactoidHotkey: process.env.SHOW_FACTOID_HOTKEY || 'CommandOrControl+Shift+F',
-  hideOverlayHotkey: process.env.HIDE_OVERLAY_HOTKEY || 'CommandOrControl+Shift+H',
-  showGameSpecificHotkey: process.env.SHOW_GAME_SPECIFIC_HOTKEY || 'CommandOrControl+Shift+G',
-  defaultGame: process.env.DEFAULT_GAME || 'default',
-  overlayWidth: parseInt(process.env.DEFAULT_OVERLAY_WIDTH) || 420,
-  overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180,
-  overlayX: process.env.DEFAULT_OVERLAY_X ? parseInt(process.env.DEFAULT_OVERLAY_X) : null,
-  overlayY: process.env.DEFAULT_OVERLAY_Y ? parseInt(process.env.DEFAULT_OVERLAY_Y) : null
-};
+// Load or create configuration
+function loadConfig() {
+  try {
+    if (fs.existsSync(configPath)) {
+      const savedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      return { ...getDefaultConfig(), ...savedConfig };
+    }
+  } catch (error) {
+    console.log('Error loading config, using defaults:', error.message);
+  }
+  return getDefaultConfig();
+}
+
+function saveConfig(config) {
+  try {
+    // Ensure data directory exists
+    const dataDir = path.dirname(configPath);
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+    console.log('Configuration saved successfully');
+  } catch (error) {
+    console.error('Error saving config:', error.message);
+  }
+}
+
+function getDefaultConfig() {
+  return {
+    port: process.env.PORT || 3000,
+    showFactoidHotkey: process.env.SHOW_FACTOID_HOTKEY || 'CommandOrControl+Shift+F',
+    hideOverlayHotkey: process.env.HIDE_OVERLAY_HOTKEY || 'CommandOrControl+Shift+H',
+    showGameSpecificHotkey: process.env.SHOW_GAME_SPECIFIC_HOTKEY || 'CommandOrControl+Shift+G',
+    defaultGame: process.env.DEFAULT_GAME || 'default',
+    overlayWidth: parseInt(process.env.DEFAULT_OVERLAY_WIDTH) || 420,
+    overlayHeight: parseInt(process.env.DEFAULT_OVERLAY_HEIGHT) || 180,
+    overlayX: process.env.DEFAULT_OVERLAY_X ? parseInt(process.env.DEFAULT_OVERLAY_X) : null,
+    overlayY: process.env.DEFAULT_OVERLAY_Y ? parseInt(process.env.DEFAULT_OVERLAY_Y) : null,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    borderColor: '#00ff00',
+    textColor: '#ffffff',
+    titleBackgroundColor: 'linear-gradient(135deg, #00ff00, #00cc00)',
+    titleTextColor: '#000000',
+    gameFactsBackgroundColor: 'rgba(0, 255, 0, 0.1)',
+    gameFactsTextColor: '#00ff00',
+    shadowColor: '#00ff00',
+    shadowOpacity: 0.6,
+    borderRadius: '15px',
+    fontSize: '16px',
+    clickThrough: false,
+    animationDirection: 'slideRight', // 'slideRight' or 'slideLeft'
+    displayDuration: 15000 // Duration in milliseconds (15 seconds default)
+  };
+}
+
+// Get configuration from saved file or defaults
+const config = loadConfig();
 
 // Factoid tracking system
 let gameFactoidIndexes = {};
 let currentTriggerCue = "Ready for factoid";
 let selectedGameForHotkey = config.defaultGame; // Track selected game for hotkey
 
-// Configuration settings
-let overlayConfig = {
-  backgroundColor: 'rgba(0, 0, 0, 0.9)',
-  borderColor: '#00ff00',
-  textColor: '#ffffff',
-  titleBackgroundColor: 'linear-gradient(135deg, #00ff00, #00cc00)',
-  titleTextColor: '#000000',
-  borderRadius: '15px',
-  fontSize: '16px',
-  clickThrough: false,
-  position: { x: null, y: null }, // Will be set on first load
-  shadowColor: '#00ff00',
-  shadowOpacity: 0.6
-};
+// Remove the old overlayConfig - now using config object directly
 
 // Game factoids data - loaded from JSON file
 let gameFactoidsData = {};
@@ -284,12 +317,12 @@ function showRandomFactoid() {
     overlayWindow.show();
     overlayWindow.setAlwaysOnTop(true, 'screen-saver'); // Ensure it stays on top
     
-    // Auto-hide after 6 seconds (slightly longer for more content)
+    // Auto-hide after configured duration
     setTimeout(() => {
       if (overlayWindow) {
         overlayWindow.hide();
       }
-    }, 6000);
+    }, config.displayDuration);
   }
 }
 
@@ -399,20 +432,29 @@ ipcMain.on('toggle-click-through', () => {
   }
 });
 
-ipcMain.on('update-overlay-config', (event, config) => {
-  overlayConfig = { ...overlayConfig, ...config };
+ipcMain.on('update-overlay-config', (event, newConfig) => {
+  // Update the config object
+  Object.assign(config, newConfig);
+  
+  // Save to file
+  saveConfig(config);
+  
+  // Apply to overlay window if it exists
   if (overlayWindow) {
-    overlayWindow.webContents.send('apply-config', overlayConfig);
+    overlayWindow.webContents.send('apply-config', config);
   }
-  console.log('Overlay configuration updated');
+  
+  console.log('Overlay configuration updated and saved');
 });
 
 ipcMain.on('get-overlay-config', (event) => {
-  event.reply('overlay-config', overlayConfig);
+  event.reply('overlay-config', config);
 });
 
 ipcMain.on('save-overlay-position', (event, position) => {
-  overlayConfig.position = position;
+  config.overlayX = position.x;
+  config.overlayY = position.y;
+  saveConfig(config);
   console.log('Overlay position saved:', position);
 });
 
@@ -482,6 +524,9 @@ ipcMain.on('update-hotkeys', (event, hotkeys) => {
   config.hideOverlayHotkey = hotkeys.hideOverlay;
   config.showGameSpecificHotkey = hotkeys.showGameSpecific;
   
+  // Save updated configuration to file
+  saveConfig(config);
+  
   // Re-register hotkeys with new combinations
   try {
     // Register global hotkey to show factoid
@@ -513,7 +558,7 @@ ipcMain.on('update-hotkeys', (event, hotkeys) => {
     console.log(`- Hide overlay: ${config.hideOverlayHotkey}`);
     console.log(`- Show game-specific factoid: ${config.showGameSpecificHotkey}`);
     
-    // Send confirmation to main window
+    // Send confirmation to main window with updated config data
     if (mainWindow) {
       mainWindow.webContents.send('hotkeys-updated', {
         success: true,
@@ -522,6 +567,12 @@ ipcMain.on('update-hotkeys', (event, hotkeys) => {
           hideOverlay: config.hideOverlayHotkey,
           showGameSpecific: config.showGameSpecificHotkey
         }
+      });
+      
+      // Also send updated config data to refresh the UI
+      mainWindow.webContents.send('config-data', {
+        ...config,
+        selectedGameForHotkey
       });
     }
   } catch (error) {
@@ -649,8 +700,13 @@ ipcMain.on('add-factoid', (event, { gameId, factoid, trigger }) => {
   if (saveGamesData()) {
     event.reply('factoid-operation-result', {
       success: true,
-      message: 'Factoid added successfully'
+      message: 'Factoid added successfully',
+      gameData: gameFactoidsData[gameId], // Send updated game data
+      gameId: gameId // Send back the game ID to keep it selected
     });
+    
+    // Update main window games list
+    updateMainWindowGameList();
   } else {
     event.reply('factoid-operation-result', {
       success: false,
@@ -760,11 +816,11 @@ function showGameSpecificFactoid(gameId) {
     overlayWindow.show();
     overlayWindow.setAlwaysOnTop(true, 'screen-saver'); // Ensure it stays on top
     
-    // Auto-hide after 6 seconds
+    // Auto-hide after configured duration
     setTimeout(() => {
       if (overlayWindow) {
         overlayWindow.hide();
       }
-    }, 6000);
+    }, config.displayDuration);
   }
 }

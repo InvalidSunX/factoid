@@ -659,9 +659,17 @@
         ipcRenderer.on('factoid-operation-result', (event, result) => {
             showStatus(result.message, !result.success);
             if (result.success) {
-                loadGames(); // Refresh the data
-                if (selectedGameId) {
-                    loadFactoids();
+                // If gameData and gameId are returned, update the local data and keep selection
+                if (result.gameData && result.gameId) {
+                    gamesData[result.gameId] = result.gameData;
+                    if (selectedGameId === result.gameId) {
+                        loadFactoids(); // Refresh factoid list for current game
+                    }
+                } else {
+                    loadGames(); // Refresh all data if no specific game data returned
+                    if (selectedGameId) {
+                        loadFactoids();
+                    }
                 }
             }
         });
