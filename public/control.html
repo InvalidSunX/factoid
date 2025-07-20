@@ -324,6 +324,17 @@
                         <label for="titleTextColor">Title Text Color:</label>
                         <input type="color" id="titleTextColor" value="#000000">
                     </div>
+                    
+                    <div class="config-row">
+                        <label for="shadowColor">Shadow Color:</label>
+                        <input type="color" id="shadowColor" value="#00ff00">
+                    </div>
+                    
+                    <div class="config-row">
+                        <label for="shadowOpacity">Shadow Opacity:</label>
+                        <input type="range" id="shadowOpacity" min="0" max="100" value="60">
+                        <span id="shadowOpacityValue">0.6</span>
+                    </div>
                 </div>
                 
                 <div class="config-section">
@@ -338,6 +349,37 @@
                         <label for="fontSize">Font Size:</label>
                         <input type="range" id="fontSize" min="12" max="24" value="16">
                         <span id="fontSizeValue">16px</span>
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <h4>Server Settings</h4>
+                    <div class="config-row">
+                        <label for="portInput">Server Port:</label>
+                        <input type="number" id="portInput" min="1000" max="65535" value="3000" style="width: 80px; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                        <button onclick="updatePort()" style="padding: 5px 10px; font-size: 11px;">Update Port</button>
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <h4>Hotkey Settings</h4>
+                    <div class="config-row">
+                        <label for="showFactoidHotkeyInput">Show Factoid:</label>
+                        <input type="text" id="showFactoidHotkeyInput" placeholder="Ctrl+Shift+F" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                    </div>
+                    <div class="config-row">
+                        <label for="hideOverlayHotkeyInput">Hide Overlay:</label>
+                        <input type="text" id="hideOverlayHotkeyInput" placeholder="Ctrl+Shift+H" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                    </div>
+                    <div class="config-row">
+                        <label for="gameSpecificHotkeyInput">Game-Specific:</label>
+                        <input type="text" id="gameSpecificHotkeyInput" placeholder="Ctrl+Shift+G" style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
+                    </div>
+                    <div class="config-row">
+                        <button onclick="updateHotkeys()" style="width: 100%; padding: 8px; font-size: 12px;">Update Hotkeys</button>
+                    </div>
+                    <div class="config-row" style="font-size: 11px; opacity: 0.8; text-align: center;">
+                        Use format: Ctrl+Shift+Key or CommandOrControl+Shift+Key
                     </div>
                 </div>
                 
@@ -439,7 +481,9 @@
                 titleBackgroundColor: `linear-gradient(135deg, ${document.getElementById('titleBgColor').value}, ${document.getElementById('titleBgColor').value}dd)`,
                 titleTextColor: document.getElementById('titleTextColor').value,
                 borderRadius: document.getElementById('borderRadius').value + 'px',
-                fontSize: document.getElementById('fontSize').value + 'px'
+                fontSize: document.getElementById('fontSize').value + 'px',
+                shadowColor: document.getElementById('shadowColor').value,
+                shadowOpacity: document.getElementById('shadowOpacity').value / 100
             };
             
             ipcRenderer.send('update-overlay-config', config);
@@ -454,9 +498,36 @@
             document.getElementById('titleTextColor').value = '#000000';
             document.getElementById('borderRadius').value = 15;
             document.getElementById('fontSize').value = 16;
+            document.getElementById('shadowColor').value = '#00ff00';
+            document.getElementById('shadowOpacity').value = 60;
             
             updateSliderValues();
             applyConfig();
+        }
+
+        function updatePort() {
+            const newPort = parseInt(document.getElementById('portInput').value);
+            if (newPort >= 1000 && newPort <= 65535) {
+                ipcRenderer.send('update-port', newPort);
+            } else {
+                alert('Please enter a valid port number between 1000 and 65535');
+            }
+        }
+
+        function updateHotkeys() {
+            const hotkeys = {
+                showFactoid: document.getElementById('showFactoidHotkeyInput').value,
+                hideOverlay: document.getElementById('hideOverlayHotkeyInput').value,
+                showGameSpecific: document.getElementById('gameSpecificHotkeyInput').value
+            };
+            
+            // Validate hotkeys are not empty
+            if (!hotkeys.showFactoid || !hotkeys.hideOverlay || !hotkeys.showGameSpecific) {
+                alert('Please fill in all hotkey fields');
+                return;
+            }
+            
+            ipcRenderer.send('update-hotkeys', hotkeys);
         }
 
         function hexToRgba(hex, alpha) {
@@ -469,6 +540,7 @@
         function updateSliderValues() {
             document.getElementById('borderRadiusValue').textContent = document.getElementById('borderRadius').value + 'px';
             document.getElementById('fontSizeValue').textContent = document.getElementById('fontSize').value + 'px';
+            document.getElementById('shadowOpacityValue').textContent = (document.getElementById('shadowOpacity').value / 100).toFixed(1);
         }
 
         // Listen for trigger cue updates
@@ -512,6 +584,13 @@
             document.getElementById('borderRadius').value = parseInt(config.borderRadius);
             document.getElementById('fontSize').value = parseInt(config.fontSize);
             
+            if (config.shadowColor) {
+                document.getElementById('shadowColor').value = config.shadowColor;
+            }
+            if (config.shadowOpacity !== undefined) {
+                document.getElementById('shadowOpacity').value = Math.round(config.shadowOpacity * 100);
+            }
+            
             updateSliderValues();
         });
 
@@ -521,6 +600,14 @@
             document.getElementById('showFactoidHotkey').textContent = config.showFactoidHotkey.replace('CommandOrControl', 'Ctrl');
             document.getElementById('hideOverlayHotkey').textContent = config.hideOverlayHotkey.replace('CommandOrControl', 'Ctrl');
             document.getElementById('gameSpecificHotkey').textContent = config.showGameSpecificHotkey.replace('CommandOrControl', 'Ctrl');
+            
+            // Update hotkey input fields
+            document.getElementById('showFactoidHotkeyInput').value = config.showFactoidHotkey;
+            document.getElementById('hideOverlayHotkeyInput').value = config.hideOverlayHotkey;
+            document.getElementById('gameSpecificHotkeyInput').value = config.showGameSpecificHotkey;
+            
+            // Update port input field
+            document.getElementById('portInput').value = config.port;
             
             // Update hotkey game selector
             document.getElementById('hotkeyGameSelect').value = config.selectedGameForHotkey;
@@ -551,12 +638,35 @@
             // Add slider event listeners
             document.getElementById('borderRadius').addEventListener('input', updateSliderValues);
             document.getElementById('fontSize').addEventListener('input', updateSliderValues);
+            document.getElementById('shadowOpacity').addEventListener('input', updateSliderValues);
             
             // Initial values
             updateSliderValues();
             
             // Request initial configuration data
             ipcRenderer.send('get-config');
+        });
+
+        // Listen for port update confirmation
+        ipcRenderer.on('port-updated', (event, newPort) => {
+            const statusElement = document.querySelector('.status');
+            statusElement.textContent = `Overlay server running on localhost:${newPort}`;
+            document.getElementById('portInput').value = newPort;
+            alert(`Server port updated to ${newPort}. Please restart any browser connections.`);
+        });
+
+        // Listen for hotkey update confirmation
+        ipcRenderer.on('hotkeys-updated', (event, response) => {
+            if (response.success) {
+                // Update hotkey display
+                document.getElementById('showFactoidHotkey').textContent = response.hotkeys.showFactoid.replace('CommandOrControl', 'Ctrl');
+                document.getElementById('hideOverlayHotkey').textContent = response.hotkeys.hideOverlay.replace('CommandOrControl', 'Ctrl');
+                document.getElementById('gameSpecificHotkey').textContent = response.hotkeys.showGameSpecific.replace('CommandOrControl', 'Ctrl');
+                
+                alert('Hotkeys updated successfully!');
+            } else {
+                alert(`Error updating hotkeys: ${response.error}`);
+            }
         });
     </script>
 </body>

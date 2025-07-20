@@ -9,14 +9,16 @@ A desktop overlay application for streamers to display "Did You Know?" factoids 
   - `Ctrl + Shift + F` - Show random factoid
   - `Ctrl + Shift + H` - Hide overlay  
   - `Ctrl + Shift + G` - Show game-specific factoid
-- **Configurable Hotkeys**: Customize hotkey combinations via .env file
+- **Full Configuration Panel**: Customize colors, fonts, shadows, hotkeys, and server settings
+- **Configurable Hotkeys**: Customize hotkey combinations via .env file or control panel
+- **Real-time Customization**: Change appearance and behavior without restarting
 - **Scalable UI**: Automatically adjusts size based on content and screen resolution
 - **Movable Overlay**: Click and drag to position anywhere on screen
-- **Color Customization**: Full color and style configuration panel
+- **Shadow Effects**: Configurable shadow color and opacity for enhanced visibility
 - **Ordered Factoids**: Sequential display with trigger timing cues
 - **Game-Specific Facts**: Tailored factoids for different games
 - **Streaming Ready**: Designed for use with OBS, Streamlabs, and other streaming software
-- **Port Configuration**: Customizable server port via environment variables
+- **Port Configuration**: Customizable server port via environment variables or control panel
 
 ## Quick Start
 
@@ -99,6 +101,41 @@ The `Ctrl + Shift + G` hotkey (or your custom combination) shows factoids for a 
 3. Perfect for when you're playing a specific game and want targeted facts
 
 ## Customization
+
+### Built-in Configuration Panel
+The control panel includes a comprehensive configuration system:
+
+1. **Colors**: Background, border, text, title, and shadow colors
+2. **Style**: Border radius, font size, shadow opacity
+3. **Server Settings**: Change the server port
+4. **Hotkey Settings**: Customize all global hotkeys
+5. **Game Selection**: Choose specific games for targeted factoids
+
+Access the configuration panel by clicking "⚙️ Configure Overlay" in the control panel.
+
+### Advanced Configuration (.env)
+Create a `.env` file in the root directory (copy from `.env.example`):
+
+```bash
+# Port configuration
+PORT=3000
+
+# Global hotkey configuration
+SHOW_FACTOID_HOTKEY=CommandOrControl+Shift+F
+HIDE_OVERLAY_HOTKEY=CommandOrControl+Shift+H
+SHOW_GAME_SPECIFIC_HOTKEY=CommandOrControl+Shift+G
+
+# Default game for game-specific hotkey
+DEFAULT_GAME=default
+
+# Overlay dimensions
+DEFAULT_OVERLAY_WIDTH=420
+DEFAULT_OVERLAY_HEIGHT=180
+
+# Default appearance
+DEFAULT_SHADOW_COLOR=#00ff00
+DEFAULT_SHADOW_OPACITY=0.6
+```
 
 ### Adding New Factoids
 Edit the `factoids` array in `src/main.js`:

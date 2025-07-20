@@ -34,113 +34,154 @@ let overlayConfig = {
   borderRadius: '15px',
   fontSize: '16px',
   clickThrough: false,
-  position: { x: null, y: null } // Will be set on first load
+  position: { x: null, y: null }, // Will be set on first load
+  shadowColor: '#00ff00',
+  shadowOpacity: 0.6
 };
 
 // Game factoids with trigger cues
 const gameFactoidsData = {
-  minecraft: {
-    facts: [
-      "Did you know? Minecraft was originally called 'Cave Game' during development!",
-      "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
-      "Did you know? Minecraft has sold over 300 million copies worldwide!",
-      "Did you know? The first version of Minecraft was created in just 6 days!",
-      "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
-    ],
-    triggers: [
-      "When entering a cave",
-      "When encountering a Creeper",
-      "During building/crafting",
-      "At game start/world creation",
-      "When in The End dimension"
-    ]
-  },
-  valorant: {
-    facts: [
-      "Did you know? Valorant was codenamed 'Project A' during development!",
-      "Did you know? Sage's healing ability was inspired by MMO healing mechanics!",
-      "Did you know? Riot Games used anti-cheat technology from the kernel level!",
-      "Did you know? Valorant's maps are designed to be perfectly balanced for both teams!",
-      "Did you know? The game was designed to run on lower-end PCs to be accessible!"
-    ],
-    triggers: [
-      "During agent select",
-      "When playing Sage",
-      "At match start",
-      "When switching sides",
-      "During performance issues"
-    ]
-  },
-  csgo: {
-    facts: [
-      "Did you know? CS:GO was initially received poorly but became one of the most popular FPS games!",
-      "Did you know? The AK-47 in CS:GO can one-shot kill with a headshot even with a helmet!",
-      "Did you know? Dust2 is the most played map in Counter-Strike history!",
-      "Did you know? The bomb timer in competitive matches is exactly 40 seconds!",
-      "Did you know? CS:GO's weapon skins market is worth millions of dollars!"
-    ],
-    triggers: [
-      "At game launch",
-      "When buying AK-47",
-      "When loading Dust2",
-      "During bomb plant/defuse",
-      "When opening cases/inventory"
-    ]
-  },
-  cs2: {
-    facts: [
-      "Did you know? Counter-Strike 2 uses the Source 2 engine for better graphics!",
-      "Did you know? CS2 features completely redesigned smoke grenades with volumetric effects!",
-      "Did you know? All CS:GO items and progress carry over to Counter-Strike 2!",
-      "Did you know? CS2 has improved netcode for more responsive gameplay!",
-      "Did you know? The new sub-tick system makes shots more precise than ever!"
-    ],
-    triggers: [
-      "At game start",
-      "When throwing smokes",
-      "When viewing inventory",
-      "During competitive match",
-      "When discussing updates"
-    ]
-  },
-  overwatch: {
-    facts: [
-      "Did you know? Overwatch was built from the cancelled project 'Titan'!",
-      "Did you know? Tracer was the first character designed for Overwatch!",
-      "Did you know? Each Overwatch hero has over 20,000 lines of code!",
-      "Did you know? The game's art style was inspired by Pixar animations!",
-      "Did you know? Overwatch won Game of the Year at The Game Awards 2016!"
-    ],
-    triggers: [
-      "At game launch",
-      "When selecting Tracer",
-      "During hero abilities",
-      "During cutscenes",
-      "During awards discussion"
-    ]
-  },
-  default: {
-    facts: [
-      "Did you know? The first video game was created in 1958!",
-      "Did you know? Pac-Man was originally called Puck-Man in Japan!",
-      "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
-      "Did you know? Tetris was created by a Russian programmer in 1984!",
-      "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
-      "Did you know? The PlayStation was originally designed as a Nintendo console!",
-      "Did you know? The longest gaming session ever recorded was 138 hours!",
-      "Did you know? Super Mario's jump sound was created by accident!"
-    ],
-    triggers: [
-      "During general gaming",
-      "When discussing retro games",
-      "During arcade discussion",
-      "When talking about puzzle games",
-      "During console discussion",
-      "When discussing gaming history",
-      "During marathon streams",
-      "When discussing sound design"
-    ]
-  }
+    halo_reach: {
+        facts: [
+            // Noble Actual
+            "The Visegrád relay's intel Noble Team retrieves reveals the Covenant were searching for a Forerunner artifact—hinting at a deeper religious motivation behind their invasion.",
+            // Winter Contingency
+            "Winter Contingency follows July 24, 2552 in-canon timeline—the precise moment Reach's planetary defense officially began to crumble.",
+            // ONI: Sword Base
+            "Sword Base is ONI-run—the module retrieved at Visegrád held data about Covenant theology, underscoring ONI's shadowy interest in alien religion.",
+            // Nightfall
+            "During Nightfall, the rural village resembles early civilian evacuation zones; in the *Fall of Reach* novel, civilians had already been fleeing days earlier.",
+            // Tip of the Spear
+            "'Tip of the Spear' mission occurs as UNSC discovers a cloaked Covenant supercarrier—this detection triggers Operation “Savannah” MAC-strike.",
+            // Long Night of Solace
+            "This mission mirrors Halo CE's Silent Cartographer with its beach assault and Warthog gameplay; Bungie called it a 'retread' with more epic scale.",
+            // Exodus
+            "Exodus is set during August 12-14 timeline; evacuations begin but are disorganized, contrasting sharply with later naval armadas in the books.",
+            // New Alexandria
+            "New Alexandria was one of the major population centers on Reach; it's glassed on August 18, showing just how abruptly civilian zones became combat zones.",
+            // The Package
+            "The 'Package' is actually Cortana—originally located at Sword Base for safekeeping before escort; explains why the Covenant targeted that location.",
+            // The Pillar of Autumn
+            "The Pillar's launch uses an ancient Covenant-marked slipspace trajectory stolen from Visegrád; that's why the Covenant's tracking device from Sigma Octanus led them.",
+            // Lone Wolf
+            "Lone Wolf is based on the 'Cole Protocol'—By leaving the Pillar of Autumn, Noble Six ensures Covenant can't follow it directly back to Earth."
+        ],
+        triggers: [
+            "At start of campaign 'Noble Actual'",
+            "Just before defending troopers in 'Winter Contingency'",
+            "Upon reaching ONI Sword Base",
+            "As rebels are rescued in 'Nightfall'",
+            "En route to EMP silos in 'Tip of the Spear'",
+            "Boarding the Covenant ship in 'Long Night of Solace'",
+            "Escorting civilians in 'Exodus'",
+            "Upon entering city ruins in 'New Alexandria'",
+            "When retrieving Cortana in 'The Package'",
+            "At Pelican launch in 'The Pillar of Autumn'",
+            "When running out alone in 'Lone Wolf'"
+        ]
+    },
+    minecraft: {
+        facts: [
+            "Did you know? Minecraft was originally called 'Cave Game' during development!",
+            "Did you know? The Creeper was created by accident when Notch mixed up the height and length values!",
+            "Did you know? Minecraft has sold over 300 million copies worldwide!",
+            "Did you know? The first version of Minecraft was created in just 6 days!",
+            "Did you know? Endermen are based on the internet urban legend 'Slender Man'!"
+        ],
+        triggers: [
+            "When entering a cave",
+            "When encountering a Creeper",
+            "During building/crafting",
+            "At game start/world creation",
+            "When in The End dimension"
+        ]
+    },
+    valorant: {
+        facts: [
+            "Did you know? Valorant was codenamed 'Project A' during development!",
+            "Did you know? Sage's healing ability was inspired by MMO healing mechanics!",
+            "Did you know? Riot Games used anti-cheat technology from the kernel level!",
+            "Did you know? Valorant's maps are designed to be perfectly balanced for both teams!",
+            "Did you know? The game was designed to run on lower-end PCs to be accessible!"
+        ],
+        triggers: [
+            "During agent select",
+            "When playing Sage",
+            "At match start",
+            "When switching sides",
+            "During performance issues"
+        ]
+    },
+    csgo: {
+        facts: [
+            "Did you know? CS:GO was initially received poorly but became one of the most popular FPS games!",
+            "Did you know? The AK-47 in CS:GO can one-shot kill with a headshot even with a helmet!",
+            "Did you know? Dust2 is the most played map in Counter-Strike history!",
+            "Did you know? The bomb timer in competitive matches is exactly 40 seconds!",
+            "Did you know? CS:GO's weapon skins market is worth millions of dollars!"
+        ],
+        triggers: [
+            "At game launch",
+            "When buying AK-47",
+            "When loading Dust2",
+            "During bomb plant/defuse",
+            "When opening cases/inventory"
+        ]
+    },
+    cs2: {
+        facts: [
+            "Did you know? Counter-Strike 2 uses the Source 2 engine for better graphics!",
+            "Did you know? CS2 features completely redesigned smoke grenades with volumetric effects!",
+            "Did you know? All CS:GO items and progress carry over to Counter-Strike 2!",
+            "Did you know? CS2 has improved netcode for more responsive gameplay!",
+            "Did you know? The new sub-tick system makes shots more precise than ever!"
+        ],
+        triggers: [
+            "At game start",
+            "When throwing smokes",
+            "When viewing inventory",
+            "During competitive match",
+            "When discussing updates"
+        ]
+    },
+    overwatch: {
+        facts: [
+            "Did you know? Overwatch was built from the cancelled project 'Titan'!",
+            "Did you know? Tracer was the first character designed for Overwatch!",
+            "Did you know? Each Overwatch hero has over 20,000 lines of code!",
+            "Did you know? The game's art style was inspired by Pixar animations!",
+            "Did you know? Overwatch won Game of the Year at The Game Awards 2016!"
+        ],
+        triggers: [
+            "At game launch",
+            "When selecting Tracer",
+            "During hero abilities",
+            "During cutscenes",
+            "During awards discussion"
+        ]
+    },
+    default: {
+        facts: [
+            "Did you know? The first video game was created in 1958!",
+            "Did you know? Pac-Man was originally called Puck-Man in Japan!",
+            "Did you know? The highest-grossing arcade game of all time is Pac-Man!",
+            "Did you know? Tetris was created by a Russian programmer in 1984!",
+            "Did you know? The first gaming console was the Magnavox Odyssey in 1972!",
+            "Did you know? The PlayStation was originally designed as a Nintendo console!",
+            "Did you know? The longest gaming session ever recorded was 138 hours!",
+            "Did you know? Super Mario's jump sound was created by accident!"
+        ],
+        triggers: [
+            "During general gaming",
+            "When discussing retro games",
+            "During arcade discussion",
+            "When talking about puzzle games",
+            "During console discussion",
+            "When discussing gaming history",
+            "During marathon streams",
+            "When discussing sound design"
+        ]
+    }
 };
 
 // Express server for serving the overlay UI
@@ -297,6 +338,7 @@ function detectCurrentGame() {
   // This is a placeholder - in a real implementation, you would detect running processes
   // For now, we'll cycle through games for demonstration
   const games = [
+    { id: 'halo_reach', name: 'halo_reach.exe', displayName: 'Halo: Reach' },
     { id: 'minecraft', name: 'minecraft.exe', displayName: 'Minecraft' },
     { id: 'valorant', name: 'VALORANT.exe', displayName: 'Valorant' },
     { id: 'csgo', name: 'csgo.exe', displayName: 'CS:GO' },
@@ -428,6 +470,103 @@ ipcMain.on('get-config', (event) => {
     ...config,
     selectedGameForHotkey
   });
+});
+
+ipcMain.on('update-port', (event, newPort) => {
+  // Close the current server
+  if (server) {
+    server.close(() => {
+      // Update port in config
+      config.port = newPort;
+      
+      // Restart server with new port
+      expressApp = express();
+      
+      // Serve static files from public directory
+      expressApp.use(express.static(path.join(__dirname, '../public')));
+
+      // API endpoint to trigger factoid display
+      expressApp.post('/api/show-factoid', (req, res) => {
+        if (overlayWindow) {
+          overlayWindow.webContents.send('show-factoid', req.body);
+          res.json({ success: true });
+        } else {
+          res.status(500).json({ error: 'Overlay window not available' });
+        }
+      });
+
+      server = expressApp.listen(config.port, () => {
+        console.log(`Factoid server restarted on http://localhost:${config.port}`);
+        // Send confirmation to main window
+        if (mainWindow) {
+          mainWindow.webContents.send('port-updated', config.port);
+        }
+      });
+    });
+  }
+});
+
+ipcMain.on('update-hotkeys', (event, hotkeys) => {
+  // Unregister all current hotkeys
+  globalShortcut.unregisterAll();
+  
+  // Update hotkeys in config
+  config.showFactoidHotkey = hotkeys.showFactoid;
+  config.hideOverlayHotkey = hotkeys.hideOverlay;
+  config.showGameSpecificHotkey = hotkeys.showGameSpecific;
+  
+  // Re-register hotkeys with new combinations
+  try {
+    // Register global hotkey to show factoid
+    globalShortcut.register(config.showFactoidHotkey, () => {
+      console.log(`Global hotkey triggered (${config.showFactoidHotkey}): Show factoid`);
+      if (overlayWindow) {
+        showRandomFactoid();
+      }
+    });
+
+    // Register global hotkey to hide overlay
+    globalShortcut.register(config.hideOverlayHotkey, () => {
+      console.log(`Global hotkey triggered (${config.hideOverlayHotkey}): Hide overlay`);
+      if (overlayWindow) {
+        overlayWindow.hide();
+      }
+    });
+
+    // Register global hotkey to show game-specific factoid
+    globalShortcut.register(config.showGameSpecificHotkey, () => {
+      console.log(`Global hotkey triggered (${config.showGameSpecificHotkey}): Show game-specific factoid`);
+      if (overlayWindow) {
+        showGameSpecificFactoid(selectedGameForHotkey);
+      }
+    });
+
+    console.log('Hotkeys updated:');
+    console.log(`- Show factoid: ${config.showFactoidHotkey}`);
+    console.log(`- Hide overlay: ${config.hideOverlayHotkey}`);
+    console.log(`- Show game-specific factoid: ${config.showGameSpecificHotkey}`);
+    
+    // Send confirmation to main window
+    if (mainWindow) {
+      mainWindow.webContents.send('hotkeys-updated', {
+        success: true,
+        hotkeys: {
+          showFactoid: config.showFactoidHotkey,
+          hideOverlay: config.hideOverlayHotkey,
+          showGameSpecific: config.showGameSpecificHotkey
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error registering hotkeys:', error);
+    // Send error to main window
+    if (mainWindow) {
+      mainWindow.webContents.send('hotkeys-updated', {
+        success: false,
+        error: error.message
+      });
+    }
+  }
 });
 
 // Function to show factoid for a specific game
